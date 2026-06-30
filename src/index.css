@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ─────────────────────────────────────────── */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white text-stone-800 overflow-x-hidden;
+  }
+}
+
+@layer utilities {
+  .font-playfair { font-family: 'Playfair Display', serif; }
+}
+
+/* ── Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #faf9f7; }
+::-webkit-scrollbar-thumb { background: #c9a8a8; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #8B3A3A; }
+
+/* ── Hero — Light left-to-right overlay ───────────── */
+/* The video sits behind; left side fades to cream so  */
+/* text is legible; right side is fully transparent    */
+/* so the video / face shows through clearly.          */
+.hero-overlay {
+  background: linear-gradient(
+    to right,
+    rgba(250, 248, 245, 1.00)  0%,
+    rgba(250, 248, 245, 0.92) 22%,
+    rgba(250, 248, 245, 0.60) 42%,
+    rgba(250, 248, 245, 0.15) 62%,
+    rgba(250, 248, 245, 0.00) 78%
+  );
+}
+
+/* ── Animated nav underline ───────────────────────── */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: #8B3A3A;
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after { width: 100%; }
+
+/* ── Card hover ───────────────────────────────────── */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 48px rgba(139, 58, 58, 0.10);
+  border-color: rgba(139, 58, 58, 0.30);
+}
+
+/* ── Stat chip shimmer ────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.stat-chip {
+  background: linear-gradient(90deg,
+    rgba(139,58,58,0.06) 25%,
+    rgba(139,58,58,0.12) 50%,
+    rgba(139,58,58,0.06) 75%
+  );
+  background-size: 200% auto;
+  animation: shimmer 3.5s linear infinite;
+}
+
+/* ── Eyebrow dot pulse ────────────────────────────── */
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.4); }
+}
+.dot-pulse { animation: dot-pulse 1.8s ease-in-out infinite; }
+
+/* ── Process connector ────────────────────────────── */
+.process-line {
+  background: linear-gradient(to right, transparent, rgba(139,58,58,0.35), transparent);
+}

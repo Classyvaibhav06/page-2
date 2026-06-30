@@ -1,0 +1,52 @@
+.scroll-stack-scroller {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: visible;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+.scroll-stack-inner {
+  padding: 10vh 0 60vh;
+  min-height: 100vh;
+}
+
+.scroll-stack-card {
+  transform-origin: top center;
+  will-change: transform, filter;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: 40px;
+  box-sizing: border-box;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  position: relative;
+}
+
+.scroll-stack-end {
+  width: 100%;
+  height: 1px;
+}
+
+/* Sidebar Stack overrides (used in ICP section) */
+.sidebar-stack .scroll-stack-inner {
+  padding: 0 0 150px 0 !important;
+  min-height: 0 !important;
+}
+
+.sidebar-stack .scroll-stack-card {
+  height: auto !important;
+  padding: 0 !important;
+  margin: 16px 0 !important;
+  border-radius: 32px !important;
+  box-shadow: none !important;
+}

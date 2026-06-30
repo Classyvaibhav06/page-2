@@ -74,27 +74,47 @@ export function PremiumICPSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {journeyPoints.map((point, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ y: -5, borderColor: '#d6d3d1' }}
-              className="bg-white rounded-[32px] p-8 border border-stone-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 flex flex-col"
-            >
-              <div 
-                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
-                style={{ backgroundColor: `${A}0A`, color: A }}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 pt-12 pb-16">
+          {journeyPoints.map((point, i) => {
+            const Icon = point.icon;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                whileHover={{ y: -6 }}
+                className="relative flex flex-col items-center text-center rounded-[30px] border-2 border-stone-100 bg-white px-8 py-12 shadow-[0_4px_30px_rgba(0,0,0,0.02)] transition-all duration-500 hover:bg-[#8B3A3A] hover:border-transparent hover:shadow-[0_20px_40px_rgba(139,58,58,0.15)] group select-none"
               >
-                <point.icon size={28} strokeWidth={1.5} />
-              </div>
-              <h3 className="text-stone-900 font-bold text-xl mb-3">{point.title}</h3>
-              <p className="text-stone-500 text-sm leading-relaxed">{point.desc}</p>
-            </motion.div>
-          ))}
+                {/* Floating Icon Circle */}
+                <div 
+                  className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 bg-[#8B3A3A12] text-[#8B3A3A] group-hover:bg-white group-hover:text-[#8B3A3A]"
+                >
+                  <Icon size={24} strokeWidth={1.75} />
+                </div>
+
+                {/* Title */}
+                <h3 className="text-stone-900 font-bold text-xl mb-3 mt-2 font-playfair transition-colors duration-300 group-hover:text-white leading-snug">
+                  {point.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-stone-500 text-sm leading-relaxed transition-colors duration-300 group-hover:text-stone-200">
+                  {point.desc}
+                </p>
+
+                {/* Floating Bottom Button */}
+                <div 
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 inline-flex items-center justify-center h-8 px-6 rounded-full border transition-all duration-300 bg-white border-[#8B3A3A] group-hover:border-white shadow-sm hover:shadow-[0_6px_15px_rgba(139,58,58,0.25)]"
+                >
+                  <svg className="w-4 h-4 text-[#8B3A3A] transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 19 18" stroke="currentColor" strokeWidth="1.5">
+                    <path strokeLinejoin="round" strokeLinecap="round" d="M3.51141 2.78405L14.9344 6.95805C15.4154 7.13405 15.4014 7.81905 14.9134 7.97605L9.68541 9.64905L8.01241 14.8771C7.85641 15.3651 7.17041 15.3791 6.99441 14.8981L2.82141 3.47405C2.66441 3.04405 3.08141 2.62705 3.51141 2.78405Z" />
+                  </svg>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

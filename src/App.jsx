@@ -907,90 +907,240 @@ function Footer() {
 // ═══════════════════════════════════════════════════════════════════════════════
 export default function App() {
   useEffect(() => {
-    // 1. Initialize Lenis
+    // ─── 1. Lenis smooth scroll ────────────────────────────────────────────────
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smooth: true
+      smooth: true,
     })
-
     lenis.on('scroll', ScrollTrigger.update)
-
-    gsap.ticker.add((time)=>{
-      lenis.raf(time * 1000)
-    })
-    
+    gsap.ticker.add((time) => { lenis.raf(time * 1000) })
     gsap.ticker.lagSmoothing(0)
 
-    // 2. Hero entrance animations (no scroll trigger needed, triggers immediately)
-    const heroTl = gsap.timeline()
-    heroTl.fromTo('#home p', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', delay: 0.2 })
-          .fromTo('#home h1', { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
-          .fromTo('#home p:nth-of-type(2)', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.5')
-          .fromTo('#home .flex-wrap', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4')
-          .fromTo('#home .mt-12', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4')
+    // ─── 2. Hero — cinematic entrance ─────────────────────────────────────────
+    gsap.set('#home h1, #home p, #home .flex-wrap, #home .mt-12', { opacity: 0 })
+    const heroTl = gsap.timeline({ delay: 0.1 })
+    heroTl
+      .fromTo('#home p:first-of-type',
+        { opacity: 0, y: 20, letterSpacing: '0.3em' },
+        { opacity: 1, y: 0, letterSpacing: '0.12em', duration: 0.9, ease: 'power3.out' })
+      .fromTo('#home h1',
+        { opacity: 0, y: 60, skewY: 2 },
+        { opacity: 1, y: 0, skewY: 0, duration: 1.1, ease: 'power4.out' }, '-=0.5')
+      .fromTo('#home p:nth-of-type(2)',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.6')
+      .fromTo('#home .flex-wrap',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
+      .fromTo('#home .mt-12',
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4')
 
-    // 3. Section scroll animations
-    const sections = ['#pain', '#icp', '#services', '#about', '#contact']
-    sections.forEach(secId => {
-      const sec = document.querySelector(secId)
-      if (!sec) return
+    // ─── 3. Pain section ──────────────────────────────────────────────────────
+    const painTl = gsap.timeline({
+      scrollTrigger: { trigger: '#pain', start: 'top 75%', toggleActions: 'play none none none' }
+    })
+    painTl
+      .fromTo('#pain .flex.items-center.gap-3',
+        { opacity: 0, x: -30 },
+        { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' })
+      .fromTo('#pain h2',
+        { opacity: 0, y: 50, skewY: 1.5 },
+        { opacity: 1, y: 0, skewY: 0, duration: 0.9, ease: 'power4.out' }, '-=0.3')
+      .fromTo('#pain .text-stone-500.text-lg',
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
 
-      // Animate Section Heading
-      const eyebrow = sec.querySelector('p')
-      const heading = sec.querySelector('h2')
-      const desc = sec.querySelector('p:nth-of-type(2)')
-
-      const headTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sec,
-          start: 'top 80%',
-          toggleActions: 'play none none none'
-        }
+    // Pain cards stagger from left
+    gsap.fromTo('#pain .space-y-6 > div',
+      { opacity: 0, x: -60, rotateY: -8 },
+      {
+        opacity: 1, x: 0, rotateY: 0,
+        duration: 0.8, stagger: 0.18, ease: 'power3.out',
+        scrollTrigger: { trigger: '#pain .space-y-6', start: 'top 82%' }
       })
 
-      if (eyebrow) headTl.fromTo(eyebrow, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' })
-      if (heading) headTl.fromTo(heading, { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.35')
-      if (desc && desc !== eyebrow) headTl.fromTo(desc, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.35')
+    // Pain funnel SVG reveal
+    gsap.fromTo('#pain svg',
+      { opacity: 0, scale: 0.88, y: 40 },
+      {
+        opacity: 1, scale: 1, y: 0,
+        duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: '#pain svg', start: 'top 80%' }
+      })
 
-      // Animate Grid Cards/Items
-      const items = sec.querySelectorAll('.grid > div, .card-hover, .grid > motion.div')
-      if (items.length > 0) {
-        gsap.fromTo(items, 
-          { opacity: 0, y: 35 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            stagger: 0.1,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: items[0],
-              start: 'top 85%',
-              toggleActions: 'play none none none'
-            }
-          }
-        )
-      }
+    // ─── 4. ICP cards — radiate from center ───────────────────────────────────
+    const icpTl = gsap.timeline({
+      scrollTrigger: { trigger: '#icp', start: 'top 75%', toggleActions: 'play none none none' }
     })
+    icpTl
+      .fromTo('#icp h2',
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out' })
+      .fromTo('#icp p.text-stone-500.text-lg',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
 
-    // 4. Bar chart animation in About section
+    gsap.fromTo('#icp .grid > div',
+      { opacity: 0, y: 70, scale: 0.92 },
+      {
+        opacity: 1, y: 0, scale: 1,
+        duration: 0.7, stagger: { each: 0.1, from: 'start' }, ease: 'back.out(1.4)',
+        scrollTrigger: { trigger: '#icp .grid', start: 'top 82%' }
+      })
+
+    // ─── 5. Services section — slide in from bottom ───────────────────────────
+    const servicesTl = gsap.timeline({
+      scrollTrigger: { trigger: '#services', start: 'top 78%' }
+    })
+    servicesTl
+      .fromTo('#services h2',
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out' })
+      .fromTo('#services button',
+        { opacity: 0, x: 30 },
+        { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' }, '-=0.5')
+
+    // ─── 6. Testimonials — fade from below with stagger ───────────────────────
+    const testTl = gsap.timeline({
+      scrollTrigger: { trigger: '#testimonials', start: 'top 80%' }
+    })
+    testTl
+      .fromTo('#testimonials .flex.flex-col.items-center',
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' })
+
+    gsap.fromTo('#testimonials .flex.justify-center > div',
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1, y: 0,
+        duration: 0.8, stagger: 0.15, ease: 'power2.out',
+        scrollTrigger: { trigger: '#testimonials .flex.justify-center', start: 'top 85%' }
+      })
+
+    // ─── 7. Global / Map section — dramatic entrance ──────────────────────────
+    const globalTl = gsap.timeline({
+      scrollTrigger: { trigger: '#global', start: 'top 78%' }
+    })
+    globalTl
+      .fromTo('#global .text-center p:first-child',
+        { opacity: 0, y: -20, letterSpacing: '0.3em' },
+        { opacity: 1, y: 0, letterSpacing: '0.12em', duration: 0.7, ease: 'power2.out' })
+      .fromTo('#global h2',
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out' }, '-=0.4')
+      .fromTo('#global .text-center p.text-stone-500',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
+
+    // Stat cards pop in
+    gsap.fromTo('#global .grid > div',
+      { opacity: 0, y: 40, scale: 0.9 },
+      {
+        opacity: 1, y: 0, scale: 1,
+        duration: 0.6, stagger: 0.1, ease: 'back.out(1.6)',
+        scrollTrigger: { trigger: '#global .grid', start: 'top 85%' }
+      })
+
+    // Map section reveal with clip-path wipe
+    gsap.fromTo('#global .rounded-3xl',
+      { opacity: 0, clipPath: 'inset(0 100% 0 0)', y: 40 },
+      {
+        opacity: 1, clipPath: 'inset(0 0% 0 0)', y: 0,
+        duration: 1.2, ease: 'power3.inOut',
+        scrollTrigger: { trigger: '#global .rounded-3xl', start: 'top 85%' }
+      })
+
+    // ─── 8. About — split layout entrance ────────────────────────────────────
+    const aboutTl = gsap.timeline({
+      scrollTrigger: { trigger: '#about', start: 'top 75%' }
+    })
+    aboutTl
+      .fromTo('#about h2',
+        { opacity: 0, x: -50 },
+        { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out' })
+      .fromTo('#about .text-stone-500.text-base',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', stagger: 0.1 }, '-=0.5')
+      .fromTo('#about .grid.grid-cols-1 > div',
+        { opacity: 0, x: -20 },
+        { opacity: 1, x: 0, duration: 0.5, stagger: 0.07, ease: 'power2.out' }, '-=0.4')
+
+    // Dashboard card sweeps in from the right
+    gsap.fromTo('#about .relative > div:first-child',
+      { opacity: 0, x: 80, rotateY: 8 },
+      {
+        opacity: 1, x: 0, rotateY: 0,
+        duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: '#about .relative', start: 'top 82%' }
+      })
+
+    // Bar chart animates up after dashboard enters
     const bars = document.querySelectorAll('#about .flex-1.rounded-t')
     if (bars.length > 0) {
-      gsap.fromTo(bars, 
+      gsap.fromTo(bars,
         { scaleY: 0, transformOrigin: 'bottom' },
-        { 
-          scaleY: 1, 
-          duration: 1, 
-          stagger: 0.05, 
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: '#about',
-            start: 'top 65%'
-          }
-        }
-      )
+        {
+          scaleY: 1, duration: 1, stagger: 0.04, ease: 'power3.out',
+          scrollTrigger: { trigger: '#about .relative', start: 'top 80%' }
+        })
     }
+
+    // Stat chips inside dashboard pop in
+    gsap.fromTo('#about .grid.grid-cols-3 > div',
+      { opacity: 0, y: 20, scale: 0.85 },
+      {
+        opacity: 1, y: 0, scale: 1,
+        duration: 0.5, stagger: 0.1, ease: 'back.out(1.8)',
+        scrollTrigger: { trigger: '#about .grid.grid-cols-3', start: 'top 85%' }
+      })
+
+    // ─── 9. Contact — form slides up, CTA fades in ────────────────────────────
+    const contactTl = gsap.timeline({
+      scrollTrigger: { trigger: '#contact', start: 'top 78%' }
+    })
+    contactTl
+      .fromTo('#contact h2',
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out' })
+      .fromTo('#contact p.text-stone-500',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
+      .fromTo('#contact form',
+        { opacity: 0, y: 50, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: 'power3.out' }, '-=0.4')
+      .fromTo('#contact form input, #contact form select, #contact form button',
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out' }, '-=0.4')
+
+    // ─── 10. Horizontal scroll parallax on section dividers ──────────────────
+    gsap.utils.toArray('[data-parallax]').forEach(el => {
+      gsap.to(el, {
+        yPercent: -15,
+        ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 1.5 }
+      })
+    })
+
+    // ─── 11. Floating accent blobs — subtle parallax ──────────────────────────
+    gsap.utils.toArray('.blur-3xl').forEach((blob, i) => {
+      gsap.to(blob, {
+        yPercent: i % 2 === 0 ? -20 : 20,
+        xPercent: i % 2 === 0 ? 10 : -10,
+        ease: 'none',
+        scrollTrigger: { trigger: blob.parentElement, start: 'top bottom', end: 'bottom top', scrub: 2 }
+      })
+    })
+
+    // ─── 12. Footer text — cascade up ────────────────────────────────────────
+    gsap.fromTo('footer .grid > div',
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1, y: 0,
+        duration: 0.7, stagger: 0.1, ease: 'power2.out',
+        scrollTrigger: { trigger: 'footer', start: 'top 90%' }
+      })
 
     return () => {
       lenis.destroy()

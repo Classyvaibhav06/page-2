@@ -8,7 +8,6 @@ import ScrollStack, { ScrollStackItem } from './components/ScrollStack'
 import { TestimonialsColumn } from './components/ui/testimonials-columns-1'
 import { InteractiveServices as Services } from './components/InteractiveServices'
 import { PremiumICPSection as ICPSection } from './components/PremiumICPSection'
-import { PremiumGallery as Gallery } from './components/PremiumGallery'
 import { GlobalReach } from './components/GlobalReach'
 import RotatingText from './components/RotatingText'
 
@@ -90,8 +89,7 @@ function Navbar() {
 
   const links = [
     { label: 'Services', href: '#services' },
-    { label: 'Results',  href: '#results'  },
-    { label: 'Process',  href: '#process'  },
+    { label: 'Global',   href: '#global'   },
     { label: 'About',    href: '#about'    },
   ]
 
@@ -169,21 +167,22 @@ function Hero() {
             style={{ fontSize: 'clamp(2.25rem, 5vw + 1rem, 4.5rem)' }}
           >
             Your Scalpel Is Precise.<br />
-            <span className="italic inline-flex items-baseline gap-3 flex-wrap" style={{ color: A }}>
+            <span className="italic inline-flex items-center gap-3 flex-wrap" style={{ color: A }}>
               Your{' '}
               <span
-                className="inline-flex items-center rounded-xl px-4 py-1"
+                className="inline-flex items-center justify-center rounded-xl px-4"
                 style={{
                   background: `${A}14`,
                   border: `1.5px solid ${A}30`,
                   minWidth: '220px',
+                  height: '1.2em',
                   overflow: 'hidden',
                 }}
               >
                 <RotatingText
                   texts={['Marketing', 'Ads', 'Funnels', 'Content', 'Growth']}
                   mainClassName="font-playfair font-bold italic"
-                  elementLevelClassName="text-inherit"
+                  elementLevelClassName="text-inherit animate-height-fix"
                   splitBy="characters"
                   staggerDuration={0.025}
                   staggerFrom="first"
@@ -192,7 +191,7 @@ function Hero() {
                   initial={{ y: '110%', opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: '-110%', opacity: 0 }}
-                  style={{ color: A, fontSize: 'inherit', lineHeight: 'inherit' }}
+                  style={{ color: A, fontSize: 'inherit', lineHeight: '1' }}
                 />
               </span>{' '}
               Isn't.
@@ -207,7 +206,7 @@ function Hero() {
           {/* CTAs */}
           <div className="flex flex-wrap items-center gap-6 mb-12 md:mb-0">
             <BtnPrimary href="#contact" className="!tracking-[0.01em]">Get a Free Growth Audit</BtnPrimary>
-            <BtnGhost href="#results">See Our Results</BtnGhost>
+            <BtnGhost href="#services">Learn More</BtnGhost>
           </div>
 
           {/* Trust strip */}
@@ -932,7 +931,7 @@ export default function App() {
           .fromTo('#home .mt-12', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4')
 
     // 3. Section scroll animations
-    const sections = ['#pain', '#icp', '#services', '#gallery', '#about', '#contact']
+    const sections = ['#pain', '#icp', '#services', '#about', '#contact']
     sections.forEach(secId => {
       const sec = document.querySelector(secId)
       if (!sec) return
@@ -1007,7 +1006,6 @@ export default function App() {
       <ICPSection />
       <Services />
       <Testimonials />
-      <Gallery />
       <GlobalReach />
       <About />
       <Contact />

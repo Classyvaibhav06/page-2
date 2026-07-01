@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { useInView } from 'framer-motion'
 
 
 import CircularGallery from './components/CircularGallery'
@@ -6,20 +7,22 @@ import { SparklesText } from './components/ui/sparkles-text'
 import { motion } from 'framer-motion'
 import ScrollStack, { ScrollStackItem } from './components/ScrollStack'
 import { TestimonialsColumn } from './components/ui/testimonials-columns-1'
-import { InteractiveServices as Services } from './components/InteractiveServices'
+import { OrbitalServices as Services } from './components/InteractiveServices'
 import { PremiumICPSection as ICPSection } from './components/PremiumICPSection'
 import { GlobalReach } from './components/GlobalReach'
 import RotatingText from './components/RotatingText'
+import { Feature108 } from './components/blocks/feature108'
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
+import { CircleDollarSign, TrendingUp, Target, Trophy, MapPin, Search } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const A = '#8B3A3A'          // primary accent – deep rose / maroon
-const AL = '#8B3A3A15'       // accent light tint
-const AB = '#6d2e2e'         // accent dark (hover)
+const A = '#1a7a78'          // primary accent – deep teal
+const AL = '#1a7a7815'       // accent light tint
+const AB = '#0d5250'         // accent dark (hover)
 
 // ─── Reusable icon components ─────────────────────────────────────────────────
 const Chevron = () => (
@@ -75,10 +78,36 @@ function BtnGhost({ href, children }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// LOGO
+// ═══════════════════════════════════════════════════════════════════════════════
+function GrowzzyLogo() {
+  return (
+    <a href="#home" className="flex-shrink-0 flex items-center group" aria-label="Growzzy Media">
+      {/* Full PNG Logo with padding cropped out */}
+      <div className="relative overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:scale-105" style={{ width: '180px', height: '36px' }}>
+        <img
+          src="/12.png"
+          alt="Growzzy Media"
+          className="absolute max-w-none"
+          style={{
+            height: '150px', // Scaled down to make the logo fit the 36px height container
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)', // Centers the image perfectly, cropping out the 500x500 whitespace
+          }}
+        />
+      </div>
+    </a>
+  )
+}
+
+
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // NAVBAR
 // ═══════════════════════════════════════════════════════════════════════════════
 function Navbar() {
-  const logoUrl = "https://growzzymedia.com/lovable-uploads/5b22c906-da6f-4a74-93b1-443537c5a5f4.png";
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -88,9 +117,10 @@ function Navbar() {
   }, []);
 
   const links = [
-    { label: 'Services', href: '#services' },
-    { label: 'Global',   href: '#global'   },
-    { label: 'About',    href: '#about'    },
+    { label: 'Services',     href: '#services' },
+    { label: 'About',        href: '#about'    },
+    { label: 'Testimonials', href: '#testimonials' },
+    { label: 'Contact Us',   href: '#contact'  },
   ]
 
   return (
@@ -103,11 +133,9 @@ function Navbar() {
         boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.06)' : 'none',
       }}
     >
-      <div className="max-w-[1440px] mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="max-w-[1440px] mx-auto px-6 py-3 flex items-center justify-between">
         {/* LOGO */}
-        <a href="#home" className="flex-shrink-0">
-          <img src={logoUrl} alt="Growzzy Media Logo" className="h-10 md:h-11 w-auto object-contain" />
-        </a>
+        <GrowzzyLogo />
 
         {/* LINKS */}
         <nav className="hidden md:flex items-center gap-8 lg:gap-10">
@@ -132,6 +160,7 @@ function Navbar() {
     </div>
   )
 }
+
 
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -163,36 +192,41 @@ function Hero() {
 
           {/* Headline */}
           <h1 
-            className="font-playfair font-bold text-stone-900 leading-[1.05] mb-6 max-w-[650px]"
+            className="font-playfair font-bold text-stone-900 leading-[1.05] mb-6 max-w-[700px]"
             style={{ fontSize: 'clamp(2.25rem, 5vw + 1rem, 4.5rem)' }}
           >
             Your Scalpel Is Precise.<br />
-            <span className="italic inline-flex items-center gap-3 flex-wrap" style={{ color: A }}>
+            <span className="italic inline-flex items-center gap-3 mt-1 flex-wrap" style={{ color: A }}>
               Your{' '}
               <span
-                className="inline-flex items-center justify-center rounded-xl px-4"
+                className="inline-block rounded-[20px] relative align-bottom"
                 style={{
-                  background: `${A}14`,
-                  border: `1.5px solid ${A}30`,
-                  minWidth: '220px',
-                  height: '1.2em',
+                  background: 'linear-gradient(to bottom, #ffffff, #faf7f5)',
+                  border: `1px solid ${A}40`,
+                  boxShadow: `0 8px 30px -4px ${A}20, inset 0 2px 4px rgba(255,255,255,1)`,
+                  minWidth: '280px', // slightly wider to ensure "Ad Strategy" fits perfectly
+                  height: '1.25em',
                   overflow: 'hidden',
+                  transform: 'translateY(-2px)'
                 }}
               >
-                <RotatingText
-                  texts={['Marketing', 'Ads', 'Funnels', 'Content', 'Growth']}
-                  mainClassName="font-playfair font-bold italic"
-                  elementLevelClassName="text-inherit animate-height-fix"
-                  splitBy="characters"
-                  staggerDuration={0.025}
-                  staggerFrom="first"
-                  rotationInterval={2400}
-                  transition={{ type: 'spring', damping: 20, stiffness: 260 }}
-                  initial={{ y: '110%', opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: '-110%', opacity: 0 }}
-                  style={{ color: A, fontSize: 'inherit', lineHeight: '1' }}
-                />
+                {/* Absolutely position the text so its animation doesn't shift the baseline of the surrounding text */}
+                <span className="absolute inset-0 flex items-center justify-center">
+                  <RotatingText
+                    texts={['Marketing', 'Ad Strategy', 'Funnel', 'Content', 'Growth']}
+                    mainClassName="font-playfair font-bold italic block"
+                    elementLevelClassName="text-inherit"
+                    splitBy="characters"
+                    staggerDuration={0.025}
+                    staggerFrom="first"
+                    rotationInterval={2800}
+                    transition={{ type: 'spring', damping: 20, stiffness: 260 }}
+                    initial={{ y: '110%', opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: '-110%', opacity: 0 }}
+                    style={{ color: A, fontSize: 'inherit', lineHeight: '1' }}
+                  />
+                </span>
               </span>{' '}
               Isn't.
             </span>
@@ -661,79 +695,255 @@ function Testimonials() {
 // ═══════════════════════════════════════════════════════════════════════════════
 // ABOUT
 // ═══════════════════════════════════════════════════════════════════════════════
+
+const barHeights = [32, 48, 40, 62, 54, 78, 68, 88, 74, 95, 84, 100]
+const metrics = [
+  { v: '$3.80', l: 'Avg CPL', icon: <CircleDollarSign className="w-5 h-5" style={{ color: A }} /> },
+  { v: '8.4×',  l: 'ROAS',     icon: <TrendingUp className="w-5 h-5" style={{ color: A }} /> },
+  { v: '91%',   l: 'Fill Rate', icon: <Target className="w-5 h-5" style={{ color: A }} /> },
+]
+const perks = [
+  'Exclusively aesthetic & cosmetic industry focus',
+  'AI-powered audience targeting & optimisation',
+  'Transparent, ROI-first reporting — always',
+  'Dedicated clinic growth strategist per account',
+  'Full-funnel ownership from ad to appointment',
+  '60+ clinics scaled across India',
+]
+
 function About() {
+  const [barsVisible, setBarsVisible] = useState(false)
+  const sectionRef = useRef(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.25 })
+
+  // trigger bar animation when section enters view
+  useEffect(() => {
+    if (isInView) setTimeout(() => setBarsVisible(true), 600)
+  }, [isInView])
+
+  const containerVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.08 } },
+  }
+  const itemVariants = {
+    hidden: { opacity: 0, x: -24 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
+  }
+
   return (
-    <section id="about" className="py-24 bg-white">
-      <div className="max-w-[1440px] mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
-        <div>
-          <Eyebrow>About Growzzy</Eyebrow>
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-stone-900 leading-tight mb-6">
+    <section id="about" ref={sectionRef} className="py-32 relative overflow-hidden"
+      style={{ background: 'linear-gradient(135deg, #FAFAF8 0%, #F5F0EB 100%)' }}>
+
+      {/* Background decorative blobs */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-30 -translate-x-1/3 -translate-y-1/3 pointer-events-none"
+        style={{ background: `${A}18` }} />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full blur-3xl opacity-20 translate-x-1/4 translate-y-1/4 pointer-events-none"
+        style={{ background: '#d6d3d140' }} />
+
+      <div className="max-w-[1440px] mx-auto px-6">
+
+        {/* ── Eyebrow + headline ─────────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-20 max-w-xl"
+        >
+          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-5" style={{ color: A }}>
+            <span className="inline-block w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: A }} />
+            About Growzzy
+          </span>
+          <h2 className="font-playfair text-5xl md:text-6xl font-bold text-stone-900 leading-[1.05] mb-5">
             We Speak Both<br />
-            <span className="italic" style={{ color: A }}>Marketing & Medicine</span>
+            <span className="italic" style={{ color: A }}>Marketing &amp; Medicine</span>
           </h2>
-          <p className="text-stone-500 text-base leading-relaxed mb-5">
-            Growzzy Media was founded with one belief: great clinics shouldn't lose patients to inferior ones just because of better marketing. We bridge that gap — combining AI-driven ad technology with deep expertise in the aesthetic and cosmetic surgery industry.
+          <p className="text-stone-500 text-lg leading-relaxed">
+            Founded on one belief: great clinics shouldn't lose patients to inferior ones just because of better marketing.
           </p>
-          <p className="text-stone-500 text-base leading-relaxed mb-10">
-            Our team includes media buyers, content strategists, CRM specialists, and growth analysts — all focused exclusively on the beauty and wellness sector. We don't serve restaurants or e-commerce brands. Clinics are all we do.
-          </p>
-          <div className="grid grid-cols-1 gap-3">
-            {[
-              'Exclusively aesthetic & cosmetic industry focus',
-              'AI-powered audience targeting & optimisation',
-              'Transparent, ROI-first reporting — always',
-              'Dedicated clinic growth strategist per account',
-              'Full-funnel ownership from ad to appointment',
-              '60+ clinics scaled across India',
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2.5 text-sm text-stone-700">
-                <span style={{ color: A }}><Check /></span>
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
+        </motion.div>
 
-        {/* Visual dashboard card */}
-        <div className="relative">
-          <div className="rounded-2xl border border-stone-100 bg-stone-50 p-8 shadow-sm">
-            <p className="text-stone-400 text-xs uppercase tracking-widest font-bold mb-5">Live Performance Dashboard</p>
+        {/* ── Two-column body ──────────────────────────────────────────────── */}
+        <div className="grid md:grid-cols-2 gap-16 items-start">
 
-            {/* Bar chart */}
-            <div className="flex items-end gap-2 h-28 mb-5">
-              {[40, 55, 45, 70, 60, 85, 75, 95, 80, 100, 90, 112].map((h, i) => (
-                <div
+          {/* LEFT — copy + checklist */}
+          <div>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.65, delay: 0.15, ease: 'easeOut' }}
+              className="text-stone-600 text-base leading-relaxed mb-5"
+            >
+              We bridge the gap — combining AI-driven ad technology with deep expertise in aesthetic and cosmetic surgery. Our team of media buyers, CRM specialists, content strategists, and growth analysts work exclusively in the beauty and wellness space.
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.65, delay: 0.25, ease: 'easeOut' }}
+              className="text-stone-600 text-base leading-relaxed mb-10"
+            >
+              We don't serve restaurants or e-commerce brands. <strong className="font-semibold text-stone-800">Clinics are all we do.</strong>
+            </motion.p>
+
+            {/* Animated checklist */}
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate={isInView ? 'visible' : 'hidden'}
+              className="space-y-3"
+            >
+              {perks.map((item, i) => (
+                <motion.div
                   key={i}
-                  className="flex-1 rounded-t transition-all duration-300"
-                  style={{
-                    height: `${h}%`,
-                    backgroundColor: i >= 8 ? A : '#e7e5e4',
-                  }}
-                />
+                  variants={itemVariants}
+                  className="flex items-center gap-3 group"
+                >
+                  <span
+                    className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
+                    style={{ background: `${A}18` }}
+                  >
+                    <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 10 8" stroke="currentColor" strokeWidth="2.5" style={{ color: A }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M1 4l3 3 5-6" />
+                    </svg>
+                  </span>
+                  <span className="text-sm text-stone-700 font-medium">{item}</span>
+                </motion.div>
               ))}
-            </div>
-            <p className="text-stone-400 text-xs text-center mb-7">Consultations booked — last 12 months</p>
+            </motion.div>
 
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { v: '$3.80', l: 'Avg CPL' },
-                { v: '8.4×', l: 'ROAS'    },
-                { v: '91%',  l: 'Fill Rate'},
-              ].map((s, i) => (
-                <div key={i} className="text-center p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
-                  <p className="font-bold text-xl text-stone-900 mb-0.5" style={{ color: A }}>{s.v}</p>
-                  <p className="text-stone-400 text-xs">{s.l}</p>
-                </div>
-              ))}
-            </div>
+            {/* CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.7, ease: 'easeOut' }}
+              className="mt-10"
+            >
+              <a
+                href="#contact"
+                className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-full text-white transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_8px_28px_rgba(139,58,58,0.35)]"
+                style={{ background: A }}
+              >
+                Book a Free Growth Audit
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </motion.div>
           </div>
 
-          {/* Accent frame */}
-          <div
-            className="absolute -bottom-3 -right-3 h-full w-full rounded-2xl -z-10 border-2"
-            style={{ borderColor: `${A}25` }}
-          />
+          {/* RIGHT — animated dashboard card */}
+          <motion.div
+            initial={{ opacity: 0, x: 60, rotateY: 6 }}
+            animate={isInView ? { opacity: 1, x: 0, rotateY: 0 } : {}}
+            transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="relative"
+            style={{ perspective: '1000px' }}
+          >
+            {/* Main card */}
+            <div className="relative rounded-[28px] border border-stone-200/70 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.07)] overflow-hidden">
+
+              {/* Card top bar */}
+              <div className="flex items-center justify-between px-8 py-5 border-b border-stone-100">
+                <div>
+                  <p className="text-stone-800 text-xs font-bold uppercase tracking-widest">Live Performance Dashboard</p>
+                  <p className="text-stone-400 text-[10px] mt-0.5">Growzzy Client Network · Updated live</p>
+                </div>
+                {/* Live indicator */}
+                <div className="flex items-center gap-1.5">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#22c55e' }} />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ background: '#22c55e' }} />
+                  </span>
+                  <span className="text-[10px] text-stone-400 font-medium">LIVE</span>
+                </div>
+              </div>
+
+              <div className="p-8">
+                {/* Animated bar chart */}
+                <div className="flex items-end gap-[5px] h-32 mb-3">
+                  {barHeights.map((h, i) => {
+                    const isHighlight = i >= 8
+                    return (
+                      <motion.div
+                        key={i}
+                        className="flex-1 rounded-t-[3px] origin-bottom"
+                        initial={{ scaleY: 0 }}
+                        animate={barsVisible ? { scaleY: 1 } : { scaleY: 0 }}
+                        transition={{ duration: 0.7, delay: i * 0.045, ease: [0.34, 1.56, 0.64, 1] }}
+                        style={{
+                          height: `${h}%`,
+                          background: isHighlight
+                            ? `linear-gradient(to top, ${A}, #c45e5e)`
+                            : '#e7e5e4',
+                        }}
+                        whileHover={{ scaleY: 1.06, transition: { duration: 0.2 } }}
+                      />
+                    )
+                  })}
+                </div>
+                <div className="flex justify-between text-[10px] text-stone-300 mb-6 font-medium px-0.5">
+                  <span>Jan</span><span>Mar</span><span>Jun</span><span>Sep</span><span>Dec</span>
+                </div>
+                <p className="text-stone-400 text-[11px] text-center mb-8 tracking-wide">
+                  Consultations booked — last 12 months
+                </p>
+
+                {/* Metric chips */}
+                <div className="grid grid-cols-3 gap-3">
+                  {metrics.map((s, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 20, scale: 0.88 }}
+                      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                      transition={{ duration: 0.55, delay: 0.7 + i * 0.12, ease: [0.34, 1.56, 0.64, 1] }}
+                      whileHover={{ y: -3, boxShadow: '0 10px 24px rgba(139,58,58,0.12)', transition: { duration: 0.25 } }}
+                      className="text-center py-5 px-3 rounded-2xl border border-stone-100 bg-stone-50 cursor-default"
+                    >
+                      <div className="flex justify-center mb-1">{s.icon}</div>
+                      <p className="font-playfair font-bold text-xl mb-0.5" style={{ color: A }}>{s.v}</p>
+                      <p className="text-stone-400 text-[10px] font-medium uppercase tracking-wider">{s.l}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom accent strip */}
+              <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, transparent, ${A}, transparent)` }} />
+            </div>
+
+            {/* Floating badge — top right */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5, y: 10 }}
+              animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.9, ease: [0.34, 1.56, 0.64, 1] }}
+              className="absolute -top-4 -right-4 bg-white border border-stone-200 rounded-2xl px-4 py-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] flex items-center gap-2"
+            >
+              <Trophy className="w-5 h-5 text-amber-500" />
+              <div>
+                <p className="text-xs font-bold text-stone-800 leading-none">320+ Clinics</p>
+                <p className="text-[10px] text-stone-400 mt-0.5">Served globally</p>
+              </div>
+            </motion.div>
+
+            {/* Floating badge — bottom left */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5, y: 10 }}
+              animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 1.05, ease: [0.34, 1.56, 0.64, 1] }}
+              className="absolute -bottom-4 -left-4 bg-white border border-stone-200 rounded-2xl px-4 py-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] flex items-center gap-2"
+            >
+              <MapPin className="w-5 h-5 text-red-500" />
+              <div>
+                <p className="text-xs font-bold text-stone-800 leading-none">5 Countries</p>
+                <p className="text-[10px] text-stone-400 mt-0.5">India · UAE · UK · USA · SG</p>
+              </div>
+            </motion.div>
+
+            {/* Subtle offset glow frame */}
+            <div className="absolute -bottom-4 -right-4 h-full w-full rounded-[28px] -z-10 border-2 pointer-events-none"
+              style={{ borderColor: `${A}20` }} />
+          </motion.div>
         </div>
+
       </div>
     </section>
   )
@@ -745,6 +955,8 @@ function About() {
 function Contact() {
   const [form, setForm] = useState({ name: '', clinic: '', city: '', phone: '', email: '', revenue: '' })
   const [sent, setSent] = useState(false)
+  const sectionRef = useRef(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.2 })
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -753,98 +965,163 @@ function Contact() {
     setForm({ name: '', clinic: '', city: '', phone: '', email: '', revenue: '' })
   }
 
-  const inputClass = "w-full border border-stone-200 rounded-lg px-4 py-3 text-sm text-stone-800 placeholder-stone-300 focus:outline-none focus:border-stone-400 transition-colors bg-white"
+  const inputClass = "w-full border border-stone-700/50 rounded-xl px-4 py-3.5 text-sm text-stone-200 placeholder-stone-500 focus:outline-none focus:border-red-400/50 focus:bg-stone-800/80 transition-all duration-300 bg-stone-800/40 backdrop-blur-sm"
+  const labelClass = "block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1.5 ml-1"
 
   return (
-    <section id="contact" className="py-24 bg-stone-50">
-      <div className="max-w-[1440px] mx-auto px-6 grid md:grid-cols-2 gap-16 items-start">
+    <section id="contact" ref={sectionRef} className="py-32 relative overflow-hidden bg-stone-950">
+      {/* Decorative background glows */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full blur-[120px] opacity-20" style={{ background: A }} />
+        <div className="absolute bottom-[10%] -left-[10%] w-[500px] h-[500px] rounded-full blur-[100px] opacity-10" style={{ background: '#3b82f6' }} />
+      </div>
+
+      <div className="max-w-[1440px] mx-auto px-6 grid lg:grid-cols-12 gap-16 items-center relative z-10">
 
         {/* Left info */}
-        <div>
-          <Eyebrow>Get Started</Eyebrow>
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-stone-900 leading-tight mb-6">
-            Claim Your Free<br />
-            <span className="italic" style={{ color: A }}>Growth Audit</span>
-          </h2>
-          <p className="text-stone-500 text-base leading-relaxed mb-10">
-            Tell us about your clinic. We'll audit your digital presence, analyse your local competition, and build a custom 90-day growth roadmap — completely free, no strings attached.
-          </p>
-          <div className="space-y-4">
+        <div className="lg:col-span-5">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-6" style={{ color: '#ef4444' }}>
+              <span className="inline-block w-1.5 h-1.5 rounded-full animate-pulse bg-red-500" />
+              Limited Availability
+            </span>
+            <h2 className="font-playfair text-5xl md:text-6xl font-bold text-white leading-tight mb-6">
+              Claim Your Free<br />
+              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-600">Growth Audit</span>
+            </h2>
+            <p className="text-stone-400 text-lg leading-relaxed mb-12">
+              Tell us about your clinic. We'll audit your digital presence, analyse your local competition, and build a custom 90-day growth roadmap — completely free.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } }
+            }}
+            className="space-y-6"
+          >
             {[
-              { icon: '🔍', title: 'Digital Presence Audit', desc: 'Google, Instagram, Meta Ads, Reviews' },
-              { icon: '🎯', title: 'Competitor Analysis',    desc: "Who's eating your market share and how" },
-              { icon: '📈', title: '90-Day Growth Roadmap', desc: 'Exactly what we\'d do for your clinic'  },
+              { icon: <Search className="w-5 h-5 text-blue-400" />, title: 'Digital Presence Audit', desc: 'Google, Instagram, Meta Ads, Reviews' },
+              { icon: <Target className="w-5 h-5 text-rose-400" />, title: 'Competitor Analysis',    desc: "Who's eating your market share and how" },
+              { icon: <TrendingUp className="w-5 h-5 text-emerald-400" />, title: '90-Day Growth Roadmap', desc: 'Exactly what we\'d do for your clinic'  },
             ].map((item, i) => (
-              <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
-                <span className="text-2xl">{item.icon}</span>
-                <div>
-                  <p className="text-stone-900 font-semibold text-sm">{item.title}</p>
-                  <p className="text-stone-400 text-xs mt-0.5">{item.desc}</p>
+              <motion.div 
+                key={i} 
+                variants={{
+                  hidden: { opacity: 0, x: -20 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: 'easeOut' } }
+                }}
+                className="flex items-start gap-5 group cursor-default"
+              >
+                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-stone-900 border border-stone-800 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:border-stone-700 shadow-lg">
+                  {item.icon}
                 </div>
-              </div>
+                <div className="pt-1">
+                  <p className="text-stone-200 font-semibold text-base mb-1 group-hover:text-white transition-colors">{item.title}</p>
+                  <p className="text-stone-500 text-sm">{item.desc}</p>
+                </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
-        {/* Form */}
-        <div className="bg-white rounded-2xl p-8 border border-stone-100 shadow-sm">
-          {sent ? (
-            <div className="flex flex-col items-center justify-center h-64 text-center">
-              <div className="h-16 w-16 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: AL }}>
-                <svg className="w-8 h-8" style={{ color: A }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="font-playfair text-2xl font-bold text-stone-900 mb-2">We'll Be in Touch!</h3>
-              <p className="text-stone-500 text-sm">Your audit request is received. Expect a call within 24 hours.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <h3 className="text-stone-900 font-bold text-xl mb-5">Get Your Free Growth Audit</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">Your Name</label>
-                  <input type="text" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Dr. Priya Sharma" className={inputClass} />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">Clinic Name</label>
-                  <input type="text" required value={form.clinic} onChange={e => setForm(f => ({ ...f, clinic: e.target.value }))} placeholder="Your Clinic" className={inputClass} />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">City</label>
-                  <input type="text" value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Delhi / Mumbai / Bangalore" className={inputClass} />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">Phone / WhatsApp</label>
-                  <input type="tel" required value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+1 (555) 000-0000" className={inputClass} />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">Email</label>
-                <input type="email" required value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="you@yourclinic.com" className={inputClass} />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">Monthly Revenue Range</label>
-                <select value={form.revenue} onChange={e => setForm(f => ({ ...f, revenue: e.target.value }))} className={inputClass + ' cursor-pointer'}>
-                  <option value="">Select range...</option>
-                  <option>Below $10,000/month</option>
-                  <option>$10,000–$30,000/month</option>
-                  <option>$30,000–$100,000/month</option>
-                  <option>$100,000+ /month</option>
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="w-full py-4 rounded-lg text-sm font-bold text-white transition-all duration-200 hover:scale-[1.01] shadow-md hover:shadow-lg mt-1"
-                style={{ backgroundColor: A }}
+        {/* Form Box */}
+        <div className="lg:col-span-7">
+          <motion.div 
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-stone-900/60 backdrop-blur-xl rounded-[32px] p-8 sm:p-12 border border-stone-800 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)]"
+          >
+            {sent ? (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                className="flex flex-col items-center justify-center h-[450px] text-center"
               >
-                Claim My Free Growth Audit →
-              </button>
-              <p className="text-center text-xs text-stone-400">No commitment. No credit card. Just clarity.</p>
-            </form>
-          )}
+                <div className="h-20 w-20 rounded-full flex items-center justify-center mb-6 bg-red-500/10 border border-red-500/20">
+                  <svg className="w-10 h-10 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="font-playfair text-3xl font-bold text-white mb-3">Audit Requested!</h3>
+                <p className="text-stone-400 text-base max-w-sm">We've received your details. One of our growth strategists will be in touch within 24 hours.</p>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="mb-8">
+                  <h3 className="text-white font-bold text-2xl mb-2">Request Your Audit</h3>
+                  <p className="text-stone-400 text-sm">Fill out the details below to get started.</p>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className={labelClass}>Your Name</label>
+                    <input type="text" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Dr. Priya Sharma" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Clinic Name</label>
+                    <input type="text" required value={form.clinic} onChange={e => setForm(f => ({ ...f, clinic: e.target.value }))} placeholder="Your Clinic Name" className={inputClass} />
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className={labelClass}>City</label>
+                    <input type="text" value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="e.g. Mumbai" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Phone / WhatsApp</label>
+                    <input type="tel" required value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+91 90000 00000" className={inputClass} />
+                  </div>
+                </div>
+
+                <div>
+                  <label className={labelClass}>Email Address</label>
+                  <input type="email" required value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="you@yourclinic.com" className={inputClass} />
+                </div>
+
+                <div>
+                  <label className={labelClass}>Monthly Revenue Range</label>
+                  <select value={form.revenue} onChange={e => setForm(f => ({ ...f, revenue: e.target.value }))} className={inputClass + ' cursor-pointer appearance-none'}>
+                    <option value="" disabled className="text-stone-500">Select your current range...</option>
+                    <option className="bg-stone-900">Below $10,000/month</option>
+                    <option className="bg-stone-900">$10,000–$30,000/month</option>
+                    <option className="bg-stone-900">$30,000–$100,000/month</option>
+                    <option className="bg-stone-900">$100,000+ /month</option>
+                  </select>
+                </div>
+
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    className="group relative w-full py-4 rounded-xl text-sm font-bold text-white transition-all duration-300 overflow-hidden"
+                    style={{ background: `linear-gradient(to right, ${AB}, ${A})` }}
+                  >
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                    <span className="relative flex items-center justify-center gap-2">
+                      Claim My Free Growth Audit
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </span>
+                  </button>
+                  <div className="mt-4 flex items-center justify-center gap-2 text-stone-500 text-xs font-medium">
+                    <svg className="w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    No commitment. No credit card. 100% Secure.
+                  </div>
+                </div>
+              </form>
+            )}
+          </motion.div>
         </div>
       </div>
     </section>
@@ -1157,6 +1434,7 @@ export default function App() {
       <Services />
       <Testimonials />
       <GlobalReach />
+      <Feature108 />
       <About />
       <Contact />
       <Footer />

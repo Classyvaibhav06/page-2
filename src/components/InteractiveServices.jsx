@@ -1,244 +1,395 @@
-import React from 'react';
-import { ArrowRight, Target, Zap, Shield, TrendingUp, Star, Users } from 'lucide-react';
-import ScrollStack, { ScrollStackItem } from './ScrollStack';
+import React, { useState, useEffect, useRef } from 'react'
+import { ArrowRight, Link, Zap, Target, Shield, TrendingUp, Users, Star, BarChart2 } from 'lucide-react'
 
-const A = '#8B3A3A';
-const AB = '#6d2e2e';
+const A = '#8B3A3A'
+const AB = '#6d2e2e'
 
 const servicesData = [
   {
-    num: '01',
+    id: 1,
     title: 'Patient Acquisition',
     subtitle: 'Fill your calendar with ready-to-book patients',
-    desc: 'Hyper-targeted Meta & Google campaigns built exclusively for aesthetic procedures. We engineer campaigns around procedure intent — not just generic traffic — so every rupee goes toward patients who are already researching your treatments.',
+    content: 'Hyper-targeted Meta & Google campaigns built exclusively for aesthetic procedures. We engineer campaigns around procedure intent so every rupee goes toward patients already researching your treatments.',
+    icon: Target,
+    relatedIds: [2, 4],
     bullets: [
       'Procedure-specific creative & copy',
       'WhatsApp & DM lead capture funnels',
-      'A/B tested landing pages that convert',
-      'Daily budget optimisation & reporting',
+      'A/B tested landing pages',
+      'Daily budget optimisation',
     ],
-    icon: Target,
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop',
     stat: { value: '3.2×', label: 'Avg. Booking Lift' },
+    energy: 92,
   },
   {
-    num: '02',
+    id: 2,
     title: 'Conversion Systems',
     subtitle: 'Turn enquiries into booked consultations — automatically',
-    desc: 'High-trust landing pages, WhatsApp automations, and multi-step follow-up sequences that nurture leads over weeks without you lifting a finger. We build the full patient pipeline, from first click to confirmed appointment.',
+    content: 'High-trust landing pages, WhatsApp automations, and multi-step follow-up sequences that nurture leads over weeks without you lifting a finger.',
+    icon: Zap,
+    relatedIds: [1, 3],
     bullets: [
       'Custom landing pages per procedure',
       'Automated WhatsApp nurture sequences',
       'CRM integration & lead scoring',
-      'Retargeting campaigns for warm leads',
+      'Retargeting for warm leads',
     ],
-    icon: Zap,
-    image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1200&auto=format&fit=crop',
     stat: { value: '40%', label: 'More Closures' },
+    energy: 85,
   },
   {
-    num: '03',
+    id: 3,
     title: 'Authority & Content',
     subtitle: 'Become the most trusted name in your city',
-    desc: 'Educational content strategies, automated review generation, and social proof systems that position your clinic as the undisputed expert. Patients research for months — we make sure every touchpoint they find confirms your authority.',
+    content: 'Educational content strategies, automated review generation, and social proof systems that position your clinic as the undisputed expert patients trust.',
+    icon: Shield,
+    relatedIds: [2, 4],
     bullets: [
       'Before/after content strategy',
-      'Automated Google & Practo review systems',
+      'Automated Google & Practo reviews',
       'Doctor bio & credentials optimisation',
-      'Instagram & YouTube growth playbooks',
+      'Instagram & YouTube playbooks',
     ],
-    icon: Shield,
-    image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1200&auto=format&fit=crop',
     stat: { value: '94%', label: 'Retention Rate' },
+    energy: 78,
   },
   {
-    num: '04',
+    id: 4,
     title: 'Growth Analytics',
     subtitle: 'Know your exact cost-per-patient, every day',
-    desc: 'A real-time performance dashboard that connects your ad spend directly to booked procedures. Track CPL, ROAS, consultation-to-patient conversion rate, and revenue — all in one place. No more guessing what is working.',
+    content: 'A real-time performance dashboard that connects your ad spend directly to booked procedures. Track CPL, ROAS, and revenue — all in one place.',
+    icon: TrendingUp,
+    relatedIds: [1, 3],
     bullets: [
-      'Real-time revenue attribution dashboard',
+      'Real-time revenue attribution',
       'Procedure-level CPL & ROAS tracking',
       'Weekly growth reports & strategy calls',
       'Competitor benchmark analysis',
     ],
-    icon: TrendingUp,
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop',
     stat: { value: '$3.80', label: 'Avg. CPL' },
+    energy: 88,
   },
-];
+  {
+    id: 5,
+    title: 'Brand Positioning',
+    subtitle: 'Own the premium tier in your market',
+    content: 'Strategic brand positioning that commands premium pricing. We craft the story, visual identity, and messaging that makes you the obvious choice for high-value aesthetic patients.',
+    icon: Star,
+    relatedIds: [3, 6],
+    bullets: [
+      'Premium brand identity audits',
+      'Competitive positioning strategy',
+      'Visual & messaging consistency',
+      'PR & authority placements',
+    ],
+    stat: { value: '2.1×', label: 'Revenue per Patient' },
+    energy: 80,
+  },
+  {
+    id: 6,
+    title: 'Patient Retention',
+    subtitle: 'Maximise lifetime value of every patient',
+    content: 'Turn one-time visitors into lifetime patients with intelligent follow-up systems, loyalty programs, and personalised re-engagement campaigns built around your procedures.',
+    icon: Users,
+    relatedIds: [2, 5],
+    bullets: [
+      'Post-procedure follow-up automation',
+      'Loyalty & referral program setup',
+      'Personalised re-engagement campaigns',
+      'Seasonal promotion calendars',
+    ],
+    stat: { value: '68%', label: 'Repeat Rate' },
+    energy: 74,
+  },
+]
 
-export function InteractiveServices() {
+export function OrbitalServices() {
+  const [expandedId, setExpandedId] = useState(null)
+  const [rotationAngle, setRotationAngle] = useState(0)
+  const [autoRotate, setAutoRotate] = useState(true)
+  const [pulseEffect, setPulseEffect] = useState({})
+  const containerRef = useRef(null)
+  const orbitRef = useRef(null)
+  const nodeRefs = useRef({})
+
+  useEffect(() => {
+    let timer
+    if (autoRotate) {
+      timer = setInterval(() => {
+        setRotationAngle(prev => Number(((prev + 0.25) % 360).toFixed(3)))
+      }, 50)
+    }
+    return () => clearInterval(timer)
+  }, [autoRotate])
+
+  const calculateNodePosition = (index, total) => {
+    const angle = ((index / total) * 360 + rotationAngle) % 360
+    const radius = 220
+    const radian = (angle * Math.PI) / 180
+    const x = radius * Math.cos(radian)
+    const y = radius * Math.sin(radian)
+    const zIndex = Math.round(100 + 50 * Math.cos(radian))
+    const opacity = Math.max(0.4, Math.min(1, 0.4 + 0.6 * ((1 + Math.sin(radian)) / 2)))
+    return { x, y, angle, zIndex, opacity }
+  }
+
+  const getRelatedIds = (id) => {
+    const item = servicesData.find(s => s.id === id)
+    return item ? item.relatedIds : []
+  }
+
+  const isRelated = (id) => {
+    if (!expandedId) return false
+    return getRelatedIds(expandedId).includes(id)
+  }
+
+  const toggleItem = (id) => {
+    if (expandedId === id) {
+      setExpandedId(null)
+      setAutoRotate(true)
+      setPulseEffect({})
+    } else {
+      setExpandedId(id)
+      setAutoRotate(false)
+      const related = getRelatedIds(id)
+      const pulse = {}
+      related.forEach(r => { pulse[r] = true })
+      setPulseEffect(pulse)
+
+      // center the node
+      const nodeIndex = servicesData.findIndex(s => s.id === id)
+      const targetAngle = (nodeIndex / servicesData.length) * 360
+      setRotationAngle(270 - targetAngle)
+    }
+  }
+
+  const handleBgClick = (e) => {
+    if (e.target === containerRef.current || e.target === orbitRef.current) {
+      setExpandedId(null)
+      setAutoRotate(true)
+      setPulseEffect({})
+    }
+  }
+
+  const expandedItem = servicesData.find(s => s.id === expandedId)
+
   return (
-    <section id="services" className="py-24 bg-[#FAF9F6] relative overflow-visible">
-      {/* Subtle pattern */}
+    <section id="services" className="w-full relative overflow-hidden bg-[#FAF9F6]" style={{ minHeight: '100vh' }}>
+      {/* Background ambient glows */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.06]"
+          style={{ background: `radial-gradient(circle, ${A} 0%, transparent 70%)` }} />
+        <div className="absolute top-[20%] right-[10%] w-[300px] h-[300px] rounded-full opacity-[0.04]"
+          style={{ background: 'radial-gradient(circle, #60a5fa 0%, transparent 70%)' }} />
+        <div className="absolute bottom-[15%] left-[10%] w-[250px] h-[250px] rounded-full opacity-[0.04]"
+          style={{ background: 'radial-gradient(circle, #a78bfa 0%, transparent 70%)' }} />
+      </div>
+
+      {/* Section header */}
+      <div className="relative z-10 pt-20 pb-4 text-center">
+        <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest mb-4"
+          style={{ color: A }}>
+          <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ backgroundColor: A }} />
+          Our Expertise
+        </span>
+        <h2 className="font-playfair text-4xl md:text-5xl font-bold text-stone-900 leading-tight">
+          Boost Your Clinic<br />
+          <span className="italic" style={{ color: A }}>with Our Expertise</span>
+        </h2>
+        <p className="text-stone-400 mt-4 text-sm">Click any service node to explore · Related services pulse when selected</p>
+      </div>
+
+      {/* Orbital canvas */}
       <div
-        className="absolute inset-0 opacity-[0.025] pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }}
-      />
+        ref={containerRef}
+        className="w-full flex items-center justify-center cursor-default"
+        style={{ height: '72vh' }}
+        onClick={handleBgClick}
+      >
+        <div
+          ref={orbitRef}
+          className="relative flex items-center justify-center"
+          style={{ width: '600px', height: '600px' }}
+        >
+          {/* Orbit rings */}
+          <div className="absolute rounded-full border border-stone-200 pointer-events-none"
+            style={{ width: '480px', height: '480px' }} />
+          <div className="absolute rounded-full border border-stone-100 pointer-events-none"
+            style={{ width: '380px', height: '380px' }} />
 
-      <div className="max-w-[1440px] mx-auto px-6 relative z-10">
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
-          <div className="max-w-xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex gap-1">
-                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: A }} />
-                <span className="w-3 h-3 rounded-full bg-stone-300" />
-              </div>
-              <p className="text-stone-500 font-semibold tracking-widest text-xs uppercase">Our Expertise</p>
-            </div>
-            <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 leading-tight">
-              Boost Your Clinic<br />
-              <span className="italic" style={{ color: A }}>with Our Expertise</span>
-            </h2>
+          {/* Center orb */}
+          <div className="absolute w-20 h-20 rounded-full flex items-center justify-center z-10 pointer-events-none"
+            style={{ background: `radial-gradient(circle, ${A}, ${AB})`, boxShadow: `0 0 50px ${A}30` }}>
+            <div className="absolute w-24 h-24 rounded-full border animate-ping opacity-20" style={{ borderColor: A }} />
+            <div className="absolute w-28 h-28 rounded-full border animate-ping opacity-10" style={{ borderColor: A, animationDelay: '0.6s' }} />
+            <BarChart2 className="w-8 h-8 text-white/90" />
           </div>
-          <button
-            className="self-start md:self-auto flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm border transition-all duration-200 hover:shadow-md bg-white border-stone-200 text-stone-900 hover:bg-stone-50"
-          >
-            View All Services <ArrowRight size={16} />
-          </button>
-        </div>
 
-        {/* ScrollStack */}
-        <div className="w-full relative">
-          <ScrollStack
-            useWindowScroll={true}
-            itemDistance={100}
-            itemScale={0.03}
-            itemStackDistance={20}
-            stackPosition="100px"
-            scaleEndPosition="60px"
-            baseScale={0.90}
-            rotationAmount={0}
-            blurAmount={0}
-          >
-            {servicesData.map((service, i) => {
-              const Icon = service.icon;
-              return (
-                <ScrollStackItem key={i} itemClassName="w-full">
+          {/* Center label */}
+          <div className="absolute z-20 pointer-events-none text-center" style={{ top: '52%' }}>
+            <p className="text-stone-400 text-[10px] font-semibold uppercase tracking-widest mt-12">
+              {expandedItem ? expandedItem.title : 'MedSpa Growth'}
+            </p>
+          </div>
+
+          {/* Nodes */}
+          {servicesData.map((item, index) => {
+            const pos = calculateNodePosition(index, servicesData.length)
+            const isOpen = expandedId === item.id
+            const related = isRelated(item.id)
+            const isPulsing = pulseEffect[item.id]
+            const Icon = item.icon
+
+            return (
+              <div
+                key={item.id}
+                ref={el => nodeRefs.current[item.id] = el}
+                className="absolute transition-all duration-700 cursor-pointer"
+                style={{
+                  transform: `translate(${pos.x}px, ${pos.y}px)`,
+                  zIndex: isOpen ? 200 : pos.zIndex,
+                  opacity: isOpen ? 1 : pos.opacity,
+                }}
+                onClick={(e) => { e.stopPropagation(); toggleItem(item.id) }}
+              >
+                {/* Glow halo */}
+                <div
+                  className={`absolute rounded-full pointer-events-none ${isPulsing ? 'animate-pulse' : ''}`}
+                  style={{
+                    width: `${item.energy * 0.5 + 44}px`,
+                    height: `${item.energy * 0.5 + 44}px`,
+                    left: `-${(item.energy * 0.5 + 44 - 40) / 2}px`,
+                    top: `-${(item.energy * 0.5 + 44 - 40) / 2}px`,
+                    background: `radial-gradient(circle, ${isOpen ? A + '20' : 'rgba(0,0,0,0.04)'} 0%, transparent 70%)`,
+                  }}
+                />
+
+                {/* Node button */}
+                <div
+                  className={`w-11 h-11 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${isOpen ? 'scale-150' : related ? 'scale-110 animate-pulse' : 'scale-100'}`}
+                  style={{
+                    background: isOpen ? A : related ? `${A}15` : 'white',
+                    borderColor: isOpen ? A : related ? A : '#e7e5e4',
+                    boxShadow: isOpen ? `0 0 30px ${A}40` : related ? `0 0 16px ${A}30` : '0 2px 12px rgba(0,0,0,0.08)',
+                  }}
+                >
+                  <Icon size={16} style={{ color: isOpen ? 'white' : related ? A : '#78716c' }} />
+                </div>
+
+                {/* Label */}
+                <div
+                  className={`absolute whitespace-nowrap text-[11px] font-bold tracking-wider transition-all duration-300 ${isOpen ? 'scale-125' : ''}`}
+                  style={{
+                    top: '48px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    color: isOpen ? A : '#78716c',
+                  }}
+                >
+                  {item.title}
+                </div>
+
+                {/* Expanded card */}
+                {isOpen && (
                   <div
-                    className="w-full rounded-[40px] overflow-hidden border border-stone-200/50"
+                    className="absolute w-72 rounded-2xl overflow-hidden"
                     style={{
-                      background: '#FFFFFF',
-                      boxShadow: '0 8px 60px rgba(0,0,0,0.07)',
+                      top: '72px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      background: 'white',
+                      border: `1px solid ${A}25`,
+                      boxShadow: `0 20px 60px rgba(0,0,0,0.12), 0 0 30px ${A}10`,
                     }}
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    <div className="grid md:grid-cols-2 min-h-[480px]">
+                    {/* Connector line */}
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-px h-4" style={{ background: `${A}60` }} />
 
-                      {/* Left — Content */}
-                      <div className="flex flex-col justify-between p-10 md:p-14">
-                        {/* Top */}
-                        <div>
-                          {/* Number + Icon row */}
-                          <div className="flex items-center gap-4 mb-8">
-                            <span
-                              className="text-5xl font-playfair font-bold leading-none select-none"
-                              style={{ color: `${A}20` }}
-                            >
-                              {service.num}
-                            </span>
-                            <div
-                              className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                              style={{ background: `${A}12`, color: A }}
-                            >
-                              <Icon size={22} strokeWidth={1.75} />
-                            </div>
+                    {/* Card header */}
+                    <div className="px-5 pt-4 pb-3 border-b border-stone-100">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+                          style={{ background: `${A}12`, color: A, border: `1px solid ${A}30` }}>
+                          {item.stat.value} {item.stat.label}
+                        </span>
+                        <Icon size={14} className="text-stone-300" />
+                      </div>
+                      <h4 className="text-stone-900 text-sm font-bold font-playfair">{item.title}</h4>
+                      <p className="text-xs mt-0.5" style={{ color: A }}>{item.subtitle}</p>
+                    </div>
+
+                    {/* Card body */}
+                    <div className="px-5 py-3">
+                      <p className="text-stone-500 text-xs leading-relaxed mb-3">{item.content}</p>
+                      <ul className="space-y-1.5 mb-4">
+                        {item.bullets.map((b, i) => (
+                          <li key={i} className="flex items-center gap-2 text-xs text-stone-500">
+                            <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: A }} />
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+
+                      {/* Energy bar */}
+                      <div className="mb-3">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-[10px] text-stone-400 flex items-center gap-1">
+                            <Zap size={9} /> Performance Score
+                          </span>
+                          <span className="text-[10px] font-mono text-stone-400">{item.energy}%</span>
+                        </div>
+                        <div className="w-full h-0.5 bg-stone-100 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full" style={{ width: `${item.energy}%`, background: `linear-gradient(to right, ${A}, #f87171)` }} />
+                        </div>
+                      </div>
+
+                      {/* Related nodes */}
+                      {item.relatedIds.length > 0 && (
+                        <div className="border-t border-stone-100 pt-3">
+                          <div className="flex items-center gap-1 mb-2">
+                            <Link size={9} className="text-stone-400" />
+                            <span className="text-[10px] uppercase tracking-widest text-stone-400">Connected Services</span>
                           </div>
-
-                          {/* Title */}
-                          <h3 className="font-playfair font-bold text-3xl md:text-4xl text-stone-900 mb-2 leading-tight">
-                            {service.title}
-                          </h3>
-                          <p className="text-sm font-semibold mb-5" style={{ color: A }}>
-                            {service.subtitle}
-                          </p>
-                          <p className="text-stone-500 text-base leading-relaxed mb-8">
-                            {service.desc}
-                          </p>
-
-                          {/* Bullets */}
-                          <ul className="space-y-2.5">
-                            {service.bullets.map((b, j) => (
-                              <li key={j} className="flex items-start gap-3 text-stone-600 text-sm">
-                                <span
-                                  className="mt-0.5 w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center"
-                                  style={{ background: `${A}15`, color: A }}
+                          <div className="flex flex-wrap gap-1.5">
+                            {item.relatedIds.map(relId => {
+                              const rel = servicesData.find(s => s.id === relId)
+                              return (
+                                <button
+                                  key={relId}
+                                  className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-full transition-all border"
+                                  style={{
+                                    borderColor: `${A}30`,
+                                    color: A,
+                                    background: `${A}08`,
+                                  }}
+                                  onMouseEnter={e => e.currentTarget.style.background = `${A}18`}
+                                  onMouseLeave={e => e.currentTarget.style.background = `${A}08`}
+                                  onClick={(e) => { e.stopPropagation(); toggleItem(relId) }}
                                 >
-                                  <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                  </svg>
-                                </span>
-                                {b}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        {/* Bottom row */}
-                        <div className="flex items-center justify-between mt-10 pt-8 border-t border-stone-100">
-                          {/* Stat */}
-                          <div>
-                            <div className="font-playfair font-bold text-3xl" style={{ color: A }}>
-                              {service.stat.value}
-                            </div>
-                            <div className="text-stone-400 text-xs font-medium mt-0.5">{service.stat.label}</div>
+                                  {rel?.title} <ArrowRight size={8} />
+                                </button>
+                              )
+                            })}
                           </div>
-
-                          {/* CTA */}
-                          <button
-                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:scale-[1.03]"
-                            style={{ background: `linear-gradient(135deg, ${A} 0%, ${AB} 100%)` }}
-                          >
-                            Learn More <ArrowRight size={14} />
-                          </button>
                         </div>
-                      </div>
-
-                      {/* Right — Image */}
-                      <div className="relative min-h-[280px] md:min-h-0 overflow-hidden">
-                        {/* Gradient overlay for visual blend */}
-                        <div
-                          className="absolute inset-0 z-10 pointer-events-none"
-                          style={{
-                            background: 'linear-gradient(to right, white 0%, transparent 30%)',
-                          }}
-                        />
-                        <img
-                          src={service.image}
-                          alt={service.title}
-                          className="absolute inset-0 w-full h-full object-cover"
-                        />
-                        {/* Floating stat badge */}
-                        <div
-                          className="absolute bottom-8 right-8 z-20 rounded-2xl px-5 py-3 shadow-xl"
-                          style={{
-                            background: 'rgba(255,255,255,0.92)',
-                            backdropFilter: 'blur(12px)',
-                            border: '1px solid rgba(255,255,255,0.6)',
-                          }}
-                        >
-                          <div className="flex items-center gap-2">
-                            <Star size={14} fill={A} stroke="none" />
-                            <span className="text-stone-900 font-bold text-sm">
-                              {service.stat.value}
-                            </span>
-                          </div>
-                          <div className="text-stone-400 text-xs mt-0.5">{service.stat.label}</div>
-                        </div>
-                      </div>
-
+                      )}
                     </div>
                   </div>
-                </ScrollStackItem>
-              );
-            })}
-          </ScrollStack>
+                )}
+              </div>
+            )
+          })}
         </div>
       </div>
+
+      {/* Bottom CTA */}
+      <div className="relative z-10 pb-16 text-center">
+        <a href="#contact" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-semibold text-sm text-white transition-all duration-200 hover:scale-105"
+          style={{ background: A, boxShadow: `0 8px 30px ${A}35` }}>
+          Get a Free Growth Audit <ArrowRight size={16} />
+        </a>
+      </div>
     </section>
-  );
+  )
 }

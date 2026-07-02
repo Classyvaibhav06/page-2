@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useReducedMotion, animate } from 'framer-motion';
 
-const A = '#8B3A3A';
+const A = '#127369';
 
 const galleryItems = [
   {

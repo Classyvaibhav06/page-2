@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { WorldMap } from './ui/world-map';
 
-const A = '#8B3A3A';
+const A = '#127369';
 
 const stats = [
   { value: '320+', label: 'Clinics Served' },

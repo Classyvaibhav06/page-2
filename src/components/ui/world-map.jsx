@@ -8,7 +8,7 @@ import DottedMap from "dotted-map";
  */
 export function WorldMap({
   dots = [],
-  lineColor = "#8B3A3A",
+  lineColor = "#127369",
   showLabels = true,
   animationDuration = 2,
   loop = true,

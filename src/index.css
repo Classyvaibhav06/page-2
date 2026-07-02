@@ -17,13 +17,15 @@
 
 @layer utilities {
   .font-playfair { font-family: 'Playfair Display', serif; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
 
 /* ── Scrollbar ─────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: #faf9f7; }
-::-webkit-scrollbar-thumb { background: #c9a8a8; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #8B3A3A; }
+::-webkit-scrollbar-thumb { background: #b1d0cd; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #127369; }
 
 /* ── Hero — Light left-to-right overlay ───────────── */
 /* The video sits behind; left side fades to cream so  */

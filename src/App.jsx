@@ -20,9 +20,9 @@ import { CircleDollarSign, TrendingUp, Target, Trophy, MapPin, Search } from 'lu
 
 gsap.registerPlugin(ScrollTrigger)
 
-const A = '#1a7a78'          // primary accent – deep teal
-const AL = '#1a7a7815'       // accent light tint
-const AB = '#0d5250'         // accent dark (hover)
+const A = '#127369'          // primary accent – deep teal
+const AL = '#12736915'       // accent light tint
+const AB = '#0d554e'         // accent dark (hover)
 
 // ─── Reusable icon components ─────────────────────────────────────────────────
 const Chevron = () => (
@@ -512,7 +512,7 @@ function PainSection() {
                       variants={{
                         hidden: { textShadow: "0px 0px 0px rgba(0,0,0,0)" },
                         visible: { 
-                          textShadow: ["0px 0px 8px rgba(139,58,58,0.4)", "0px 0px 0px rgba(139,58,58,0)"], 
+                          textShadow: ["0px 0px 8px rgba(18,115,105,0.4)", "0px 0px 0px rgba(18,115,105,0)"], 
                           transition: { duration: 0.6 } 
                         }
                       }}
@@ -961,7 +961,7 @@ function About() {
             >
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-full text-white transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_8px_28px_rgba(139,58,58,0.35)]"
+                className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-full text-white transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_8px_28px_rgba(18,115,105,0.35)]"
                 style={{ background: A }}
               >
                 Book a Free Growth Audit
@@ -1037,12 +1037,12 @@ function About() {
                       initial={{ opacity: 0, y: 20, scale: 0.88 }}
                       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
                       transition={{ duration: 0.55, delay: 0.7 + i * 0.12, ease: [0.34, 1.56, 0.64, 1] }}
-                      whileHover={{ y: -3, boxShadow: '0 10px 24px rgba(139,58,58,0.12)', transition: { duration: 0.25 } }}
-                      className="text-center py-5 px-3 rounded-2xl border border-stone-100 bg-stone-50 cursor-default"
+                      whileHover={{ y: -3, boxShadow: '0 10px 24px rgba(18,115,105,0.12)', transition: { duration: 0.25 } }}
+                      className="text-center py-3 px-1 sm:py-5 sm:px-3 rounded-2xl border border-stone-100 bg-stone-50 cursor-default"
                     >
                       <div className="flex justify-center mb-1">{s.icon}</div>
-                      <p className="font-playfair font-bold text-xl mb-0.5" style={{ color: A }}>{s.v}</p>
-                      <p className="text-stone-400 text-[10px] font-medium uppercase tracking-wider">{s.l}</p>
+                      <p className="font-playfair font-bold text-lg sm:text-xl mb-0.5" style={{ color: A }}>{s.v}</p>
+                      <p className="text-stone-400 text-[9px] sm:text-[10px] font-medium uppercase tracking-wider">{s.l}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -1057,7 +1057,7 @@ function About() {
               initial={{ opacity: 0, scale: 0.5, y: 10 }}
               animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.9, ease: [0.34, 1.56, 0.64, 1] }}
-              className="absolute -top-4 -right-4 bg-white border border-stone-200 rounded-2xl px-4 py-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] flex items-center gap-2"
+              className="absolute -top-4 right-0 sm:-right-4 bg-white border border-stone-200 rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] flex items-center gap-2 z-10"
             >
               <Trophy className="w-5 h-5 text-amber-500" />
               <div>
@@ -1071,7 +1071,7 @@ function About() {
               initial={{ opacity: 0, scale: 0.5, y: 10 }}
               animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 1.05, ease: [0.34, 1.56, 0.64, 1] }}
-              className="absolute -bottom-4 -left-4 bg-white border border-stone-200 rounded-2xl px-4 py-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] flex items-center gap-2"
+              className="absolute -bottom-4 left-0 sm:-left-4 bg-white border border-stone-200 rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] flex items-center gap-2 z-10"
             >
               <MapPin className="w-5 h-5 text-red-500" />
               <div>

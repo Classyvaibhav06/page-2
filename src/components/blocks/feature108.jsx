@@ -86,8 +86,8 @@ const Feature108 = ({
     <section className="py-24 bg-stone-50">
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="flex flex-col items-center gap-4 text-center mb-16">
-          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#8b3a3a]">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#8b3a3a]" />
+          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#127369]">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#127369]" />
             {badge}
           </span>
           <h2 className="font-playfair text-4xl md:text-5xl font-bold text-stone-900 leading-tight">
@@ -95,13 +95,13 @@ const Feature108 = ({
           </h2>
           <p className="text-stone-500 text-lg max-w-2xl">{description}</p>
         </div>
-        <Tabs defaultValue={tabs[0].value} className="mt-8">
-          <TabsList className="container flex flex-col items-center justify-center gap-4 sm:flex-row md:gap-10">
+        <Tabs defaultValue={tabs[0].value} className="mt-8 w-full max-w-full">
+          <TabsList className="flex w-full overflow-x-auto no-scrollbar justify-start sm:justify-center gap-3 pb-2 sm:pb-0 snap-x snap-mandatory">
             {tabs.map((tab) => (
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className="flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-stone-500 data-[state=active]:bg-white data-[state=active]:text-[#8b3a3a] data-[state=active]:shadow-sm transition-all"
+                className="whitespace-nowrap flex-shrink-0 snap-center flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-stone-500 data-[state=active]:bg-white data-[state=active]:text-[#127369] data-[state=active]:shadow-sm transition-all"
               >
                 {tab.icon} {tab.label}
               </TabsTrigger>
@@ -115,14 +115,14 @@ const Feature108 = ({
                 className="grid gap-16 lg:grid-cols-2 items-center outline-none focus-visible:ring-0"
               >
                 <div className="flex flex-col gap-6">
-                  <Badge variant="outline" className="w-fit bg-stone-50 text-[#8b3a3a] border-[#8b3a3a]/20 font-playfair text-xl px-4 py-1">
+                  <Badge variant="outline" className="w-fit bg-stone-50 text-[#127369] border-[#127369]/20 font-playfair text-xl px-4 py-1">
                     {tab.content.badge}
                   </Badge>
                   <div>
                     <h3 className="font-playfair text-4xl font-bold text-stone-900 mb-2">
                       {tab.content.title}
                     </h3>
-                    <p className="text-[#8b3a3a] font-medium text-sm mb-6">
+                    <p className="text-[#127369] font-medium text-sm mb-6">
                       {tab.content.subtitle}
                     </p>
                     <p className="text-stone-500 text-base leading-relaxed mb-8">
@@ -131,23 +131,23 @@ const Feature108 = ({
                     <ul className="space-y-3 mb-10">
                       {tab.content.features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-3 text-stone-600 text-sm">
-                          <Check className="w-4 h-4 text-[#8b3a3a] shrink-0 mt-0.5" />
+                          <Check className="w-4 h-4 text-[#127369] shrink-0 mt-0.5" />
                           <span>{feature}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="flex items-center justify-between mt-auto pt-6 border-t border-stone-100">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-4 mt-auto pt-6 border-t border-stone-100">
                     <div>
-                      <p className="font-playfair text-3xl font-bold text-[#8b3a3a]">{tab.content.metricValue}</p>
+                      <p className="font-playfair text-3xl font-bold text-[#127369]">{tab.content.metricValue}</p>
                       <p className="text-xs text-stone-400 uppercase tracking-wider mt-1">{tab.content.metricLabel}</p>
                     </div>
-                    <Button className="rounded-full bg-[#8b3a3a] hover:bg-[#7a3131] text-white px-6 py-5 flex items-center gap-2">
+                    <Button className="w-full sm:w-auto rounded-full bg-[#127369] hover:bg-[#0d554e] text-white px-6 py-5 flex items-center justify-center gap-2">
                       {tab.content.buttonText} <ArrowRight className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
-                <div className="relative h-[500px] w-full rounded-2xl overflow-hidden shadow-xl border border-stone-100/50">
+                <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] w-full rounded-2xl overflow-hidden shadow-xl border border-stone-100/50">
                   <img
                     src={tab.content.imageSrc}
                     alt={tab.content.imageAlt}

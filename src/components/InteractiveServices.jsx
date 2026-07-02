@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { ArrowRight, Link, Zap, Target, Shield, TrendingUp, Users, Star, BarChart2 } from 'lucide-react'
 
-const A = '#8B3A3A'
-const AB = '#6d2e2e'
+const A = '#127369'
+const AB = '#0d554e'
 
 const servicesData = [
   {

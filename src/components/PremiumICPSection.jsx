@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ShieldCheck, Search, Image as ImageIcon, Lock, CalendarDays, BadgeCheck } from 'lucide-react';
 import ScrollFloat from './ScrollFloat';
 
-const A = '#8B3A3A';
+const A = '#127369';
 
 const journeyPoints = [
   {
@@ -43,7 +43,7 @@ export function PremiumICPSection() {
     <section id="icp" className="py-32 bg-[#FAF9F6] relative overflow-hidden">
       {/* Background accents */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-stone-200/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-50" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#8B3A3A]/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#127369]/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4" />
 
       <div className="max-w-[1440px] mx-auto px-6 relative z-10">
         
@@ -64,7 +64,7 @@ export function PremiumICPSection() {
               scrollStart='center bottom+=50%'
               scrollEnd='bottom bottom-=40%'
               stagger={0.03}
-              textClassName="italic text-[#8B3A3A]"
+              textClassName="italic text-[#127369]"
             >
               We Do Aesthetic Growth.
             </ScrollFloat>
@@ -85,11 +85,11 @@ export function PremiumICPSection() {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 whileHover={{ y: -6 }}
-                className="relative flex flex-col items-center text-center rounded-[30px] border-2 border-stone-100 bg-white px-8 py-12 shadow-[0_4px_30px_rgba(0,0,0,0.02)] transition-all duration-500 hover:bg-[#8B3A3A] hover:border-transparent hover:shadow-[0_20px_40px_rgba(139,58,58,0.15)] group select-none"
+                className="relative flex flex-col items-center text-center rounded-[30px] border-2 border-stone-100 bg-white px-8 py-12 shadow-[0_4px_30px_rgba(0,0,0,0.02)] transition-all duration-500 hover:bg-[#127369] hover:border-transparent hover:shadow-[0_20px_40px_rgba(18,115,105,0.15)] group select-none"
               >
                 {/* Floating Icon Circle */}
                 <div 
-                  className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 bg-[#8B3A3A12] text-[#8B3A3A] group-hover:bg-white group-hover:text-[#8B3A3A]"
+                  className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-14 h-14 rounded-full transition-all duration-300 bg-[#12736912] text-[#127369] group-hover:bg-white group-hover:text-[#127369]"
                 >
                   <Icon size={24} strokeWidth={1.75} />
                 </div>
@@ -106,9 +106,9 @@ export function PremiumICPSection() {
 
                 {/* Floating Bottom Button */}
                 <div 
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 inline-flex items-center justify-center h-8 px-6 rounded-full border transition-all duration-300 bg-white border-[#8B3A3A] group-hover:border-white shadow-sm hover:shadow-[0_6px_15px_rgba(139,58,58,0.25)]"
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 inline-flex items-center justify-center h-8 px-6 rounded-full border transition-all duration-300 bg-white border-[#127369] group-hover:border-white shadow-sm hover:shadow-[0_6px_15px_rgba(18,115,105,0.25)]"
                 >
-                  <svg className="w-4 h-4 text-[#8B3A3A] transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 19 18" stroke="currentColor" strokeWidth="1.5">
+                  <svg className="w-4 h-4 text-[#127369] transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 19 18" stroke="currentColor" strokeWidth="1.5">
                     <path strokeLinejoin="round" strokeLinecap="round" d="M3.51141 2.78405L14.9344 6.95805C15.4154 7.13405 15.4014 7.81905 14.9134 7.97605L9.68541 9.64905L8.01241 14.8771C7.85641 15.3651 7.17041 15.3791 6.99441 14.8981L2.82141 3.47405C2.66441 3.04405 3.08141 2.62705 3.51141 2.78405Z" />
                   </svg>
                 </div>

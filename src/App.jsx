@@ -44,9 +44,9 @@ const Star = () => (
 // ─── Eyebrow label ─────────────────────────────────────────────────────────────
 function Eyebrow({ children }) {
   return (
-    <p className="inline-flex items-center text-xs font-semibold uppercase mb-5 md:mb-6" style={{ color: A, letterSpacing: '0.12em' }}>
-      <span className="dot-pulse rounded-full inline-block mr-2" style={{ backgroundColor: A, width: '6px', height: '6px' }} />
-      {children}
+    <p className="flex items-start text-xs font-semibold uppercase mb-5 md:mb-6" style={{ color: A, letterSpacing: '0.12em' }}>
+      <span className="dot-pulse rounded-full flex-shrink-0 mr-2 mt-[4px]" style={{ backgroundColor: A, width: '6px', height: '6px' }} />
+      <span>{children}</span>
     </p>
   )
 }
@@ -153,8 +153,9 @@ function Navbar() {
         </nav>
 
         {/* CTA */}
-        <BtnPrimary href="#contact" className="!py-2.5 !px-6 !text-sm">
-          Get a Free Audit
+        <BtnPrimary href="#contact" className="!py-2 md:!py-2.5 !px-3 md:!px-6 !text-xs md:!text-sm whitespace-nowrap">
+          <span className="hidden sm:inline">Get a Free Audit</span>
+          <span className="sm:hidden">Get Audit</span>
         </BtnPrimary>
       </div>
     </div>
@@ -170,7 +171,7 @@ function Hero() {
   return (
     <section id="home" className="relative w-full md:min-h-screen flex items-center overflow-hidden bg-[#faf8f5]">
 
-      {/* ── Full-bleed video (Desktop) ── */}
+      {/* ── Desktop Full-bleed video ── */}
       <div className="absolute inset-0 hidden md:block">
         <video
           src="/video.mp4"
@@ -178,12 +179,31 @@ function Hero() {
           className="w-full h-full object-cover"
           style={{ objectPosition: 'right 20%' }}
         />
-        {/* Cream gradient — opaque left, transparent right */}
         <div className="hero-overlay absolute inset-0" />
       </div>
 
+      {/* ── Mobile Video Background (Scaled down to fit face on the right) ── */}
+      <div 
+        className="absolute bottom-0 right-0 w-full md:hidden z-0 pointer-events-none" 
+        style={{ 
+          height: '70%',
+          transform: `translateY(-19%)` 
+        }}
+      >
+        <video
+          src="/video.mp4"
+          autoPlay loop muted playsInline
+          className="w-full h-full object-cover"
+          style={{ objectPosition: '58% center' }}
+        />
+        {/* Fade top edge smoothly into the cream background */}
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#faf8f5] to-transparent" />
+        {/* Fade left edge so text remains readable */}
+        <div className="absolute inset-y-0 left-0 w-3/4 bg-gradient-to-r from-[#faf8f5] via-[#faf8f5]/80 to-transparent" />
+      </div>
+
       {/* ── Content ── */}
-      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 flex flex-col md:flex-row items-center pt-32 pb-16 md:py-0 min-h-screen md:min-h-0">
+      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 flex flex-col md:flex-row items-center pt-28 pb-20 md:py-0 min-h-[100svh] md:min-h-screen">
         
         {/* Text Block */}
         <div className="w-full md:w-1/2 md:pr-10 lg:pr-12">
@@ -196,15 +216,13 @@ function Hero() {
             style={{ fontSize: 'clamp(2.25rem, 5vw + 1rem, 4.5rem)' }}
           >
             Your Scalpel Is Precise.<br />
-            <span className="italic inline-flex items-center gap-3 mt-1 flex-wrap" style={{ color: A }}>
+            <span className="italic" style={{ color: A }}>
               Your{' '}
               <span
-                className="inline-block rounded-[20px] relative align-bottom"
+                className="inline-block relative align-middle mx-1 md:mx-2"
                 style={{
-                  background: 'linear-gradient(to bottom, #ffffff, #faf7f5)',
-                  border: `1px solid ${A}40`,
-                  boxShadow: `0 8px 30px -4px ${A}20, inset 0 2px 4px rgba(255,255,255,1)`,
-                  minWidth: '280px', // slightly wider to ensure "Ad Strategy" fits perfectly
+                  background: 'transparent',
+                  width: '5.2em', // Responsive width scaling with font size
                   height: '1.25em',
                   overflow: 'hidden',
                   transform: 'translateY(-2px)'
@@ -249,17 +267,9 @@ function Hero() {
             <span className="border-l border-gray-300 pl-3">3x Avg. Bookings</span>
             <span className="border-l border-gray-300 pl-3">Delhi · Mumbai · Bangalore</span>
           </div>
+
         </div>
 
-        {/* Mobile Video/Image */}
-        <div className="w-full md:hidden mt-12 rounded-2xl overflow-hidden shadow-xl relative h-[400px]">
-          <video
-            src="/video.mp4"
-            autoPlay loop muted playsInline
-            className="w-full h-full object-cover"
-            style={{ objectPosition: 'center 20%' }}
-          />
-        </div>
 
       </div>
     </section>
@@ -269,6 +279,90 @@ function Hero() {
 // ═══════════════════════════════════════════════════════════════════════════════
 // PAIN SECTION
 // ═══════════════════════════════════════════════════════════════════════════════
+
+const generateParticles = () => {
+  const p = [];
+  let id = 0;
+  const rand = (min, max) => Math.random() * (max - min) + min;
+
+  // Helper to generate a curved path for particles
+  const getCurve = (startX, exitX, leakY) => {
+    return {
+      cx: [startX, startX + (exitX - startX) * 0.1, startX + (exitX - startX) * 0.4, exitX],
+      cy: [-10, -10 + (leakY + 10) * 0.4, -10 + (leakY + 10) * 0.8, leakY]
+    };
+  };
+
+  // Stage 1 leaks (80% lost) - Lots of particles
+  for(let i=0; i<18; i++) {
+    const isLeft = i % 2 === 0;
+    const startX = isLeft ? rand(80, 190) : rand(230, 340);
+    const exitX = isLeft ? 52 : 368;
+    const path = getCurve(startX, exitX, 87);
+    p.push({
+      id: id++,
+      cx: path.cx,
+      cy: path.cy,
+      opacity: [0, 0.7, 0.7, 0],
+      times: [0, 0.2, 0.8, 1],
+      duration: rand(2.5, 3.5),
+      delay: rand(0, 4)
+    });
+  }
+
+  // Stage 2 leaks (90% lost) - Medium amount
+  for(let i=0; i<10; i++) {
+    const isLeft = i % 2 === 0;
+    const startX = isLeft ? rand(110, 190) : rand(230, 310);
+    const exitX = isLeft ? 94 : 326;
+    const path = getCurve(startX, exitX, 179);
+    p.push({
+      id: id++,
+      cx: path.cx,
+      cy: path.cy,
+      opacity: [0, 0.7, 0.7, 0],
+      times: [0, 0.2, 0.8, 1],
+      duration: rand(3.5, 4.5),
+      delay: rand(0, 4.5)
+    });
+  }
+
+  // Stage 3 leaks (75% lost) - Few
+  for(let i=0; i<5; i++) {
+    const isLeft = i % 2 === 0;
+    const startX = isLeft ? rand(140, 190) : rand(230, 280);
+    const exitX = isLeft ? 132 : 288;
+    const path = getCurve(startX, exitX, 271);
+    p.push({
+      id: id++,
+      cx: path.cx,
+      cy: path.cy,
+      opacity: [0, 0.7, 0.7, 0],
+      times: [0, 0.2, 0.8, 1],
+      duration: rand(4.5, 5.5),
+      delay: rand(0, 5)
+    });
+  }
+
+  // Converted (5 patients) - Very few
+  for(let i=0; i<3; i++) {
+    const startX = rand(190, 230);
+    p.push({
+      id: id++,
+      cx: [startX, startX, startX, startX],
+      cy: [-10, 120, 250, 380], // falls straight down
+      opacity: [0, 0.8, 0.8, 0],
+      times: [0, 0.2, 0.8, 1],
+      duration: rand(5.5, 6.5),
+      delay: rand(0, 6)
+    });
+  }
+
+  return p;
+};
+
+const FUNNEL_PARTICLES = generateParticles();
+
 function PainSection() {
   const pains = [
     {
@@ -288,13 +382,14 @@ function PainSection() {
     },
   ]
 
-  const A_LOCAL = '#8B3A3A'
+  const A_LOCAL = '#127369' // Hero Teal
+  const LEAK_COLOR = '#d97706' // Amber-600
 
   const stages = [
-    { points: '30,0 390,0 348,82 72,82',       label: '1,000 Clicks',      sub: 'Ad Impressions',    fill: `${A_LOCAL}0D`, cy: 34  },
-    { points: '72,92 348,92 306,174 114,174',   label: '200 Leads',         sub: 'Enquiries Received', fill: `${A_LOCAL}18`, cy: 126 },
-    { points: '114,184 306,184 270,266 150,266', label: '20 Consultations', sub: 'Booked Meetings',   fill: `${A_LOCAL}26`, cy: 218 },
-    { points: '150,276 270,276 246,348 174,348', label: '5 Patients',       sub: 'Converted',         fill: `${A_LOCAL}3A`, cy: 305 },
+    { points: '30,0 390,0 348,82 72,82',       label: '1,000 Clicks',      sub: 'Ad Impressions',    fill: `${A_LOCAL}10`, strokeW: "1", cy: 34  },
+    { points: '72,92 348,92 306,174 114,174',   label: '200 Leads',         sub: 'Enquiries Received', fill: `${A_LOCAL}25`, strokeW: "1.25", cy: 126 },
+    { points: '114,184 306,184 270,266 150,266', label: '20 Consultations', sub: 'Booked Meetings',   fill: `${A_LOCAL}45`, strokeW: "1.5", cy: 218 },
+    { points: '150,276 270,276 246,348 174,348', label: '5 Patients',       sub: 'Converted',         fill: `${A_LOCAL}65`, strokeW: "1.75", cy: 305 },
   ]
 
   const leaks = [
@@ -303,11 +398,13 @@ function PainSection() {
     { lx: 132, rx: 288, y: 271, pct: '75% lost here' },
   ]
 
+
+
   // Viewport trigger settings
   const vp = { once: true, amount: 0.3 }
 
   return (
-    <section id="pain" className="py-24 bg-stone-50 overflow-hidden">
+    <section id="pain" className="py-24 bg-[#faf8f5] overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-6">
         
         {/* 1. Header block */}
@@ -338,7 +435,7 @@ function PainSection() {
           </motion.p>
           
           {/* Headline */}
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-stone-900 leading-tight">
+          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-stone-900 leading-[0.9]">
             <motion.span
               className="block"
               variants={{
@@ -349,8 +446,8 @@ function PainSection() {
               Why Most MedSpa<br />
             </motion.span>
             <motion.span 
-              className="italic block relative overflow-hidden" 
-              style={{ color: A_LOCAL, paddingRight: '0.1em' }}
+              className="italic block relative overflow-hidden text-[1.15em]" 
+              style={{ color: '#0d554e', paddingRight: '0.1em' }}
               variants={{
                 hidden: { opacity: 0, y: 20, clipPath: "polygon(0 0, 0 0, 0 100%, 0% 100%)" },
                 visible: { 
@@ -370,7 +467,7 @@ function PainSection() {
 
           {/* Left: numbered pain points */}
           <motion.div 
-            className="space-y-10"
+            className="flex flex-col gap-10 lg:gap-12"
             initial="hidden"
             whileInView="visible"
             viewport={vp}
@@ -391,7 +488,7 @@ function PainSection() {
                 <div className="flex-shrink-0 w-10 pt-0.5">
                   <motion.span 
                     className="font-playfair text-3xl font-bold leading-none select-none block origin-center" 
-                    style={{ color: `${A_LOCAL}40` }}
+                    style={{ color: `${A_LOCAL}66` }}
                     variants={{
                       hidden: { scale: 0.8 },
                       visible: { scale: 1, transition: { duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } }
@@ -404,7 +501,7 @@ function PainSection() {
                   {/* Vertical line animated */}
                   <motion.div 
                     className="absolute left-0 top-0 bottom-0 w-[2px]"
-                    style={{ backgroundColor: `${A_LOCAL}25`, originY: 0 }}
+                    style={{ backgroundColor: `${A_LOCAL}4D`, originY: 0 }}
                     variants={{
                       hidden: { scaleY: 0 },
                       visible: { scaleY: 1, transition: { duration: 0.4 } }
@@ -431,15 +528,14 @@ function PainSection() {
 
           {/* Right: SVG funnel */}
           <motion.div 
-            className="flex justify-center"
+            className="flex justify-center w-full max-w-[360px] lg:max-w-[420px] mx-auto"
             initial="hidden"
             whileInView="visible"
             viewport={vp}
           >
             <svg
               viewBox="0 0 420 395"
-              className="w-full max-w-[420px]"
-              style={{ filter: 'drop-shadow(0 8px 40px rgba(139,58,58,0.12))' }}
+              className="w-full h-auto overflow-visible"
             >
               {/* Funnel trapezoids */}
               {stages.map((s, i) => {
@@ -460,7 +556,7 @@ function PainSection() {
                       points={s.points}
                       fill={s.fill}
                       stroke={A_LOCAL}
-                      strokeWidth="1.5"
+                      strokeWidth={s.strokeW}
                       strokeLinejoin="round"
                       variants={isFinal ? {
                         hidden: {},
@@ -485,6 +581,30 @@ function PainSection() {
                 )
               })}
 
+              {/* Falling Particles Animation */}
+              {FUNNEL_PARTICLES.map((particle) => (
+                <motion.circle
+                  key={`particle-${particle.id}`}
+                  r="2.5"
+                  fill={A_LOCAL}
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: { 
+                      cx: particle.cx,
+                      cy: particle.cy,
+                      opacity: particle.opacity,
+                      transition: { 
+                        duration: particle.duration, 
+                        repeat: Infinity, 
+                        delay: particle.delay,
+                        ease: "linear",
+                        times: particle.times
+                      }
+                    }
+                  }}
+                />
+              ))}
+
               {/* Leak indicators */}
               {leaks.map((l, i) => (
                 <motion.g 
@@ -495,8 +615,8 @@ function PainSection() {
                   }}
                 >
                   {/* Left dashed line drawing (Circle -> Funnel) */}
-                  <motion.line x1={l.lx + 10} y1={l.y} x2={l.lx + 28} y2={l.y}
-                    stroke={A_LOCAL} strokeWidth="1" strokeDasharray="3 3" opacity="0.45"
+                  <motion.line x1={l.lx + 12} y1={l.y} x2={l.lx + 28} y2={l.y}
+                    stroke={LEAK_COLOR} strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6"
                     variants={{
                       hidden: { pathLength: 0 },
                       visible: { pathLength: 1, transition: { duration: 0.4 } }
@@ -513,15 +633,15 @@ function PainSection() {
                     }}
                     style={{ originX: `${l.lx}px`, originY: `${l.y}px` }}
                   >
-                    <motion.circle cx={l.lx} cy={l.y} r="10" fill="white" stroke={A_LOCAL} strokeWidth="1.5" 
+                    <motion.circle cx={l.lx} cy={l.y} r="12" fill="white" stroke={LEAK_COLOR} strokeWidth="2" 
                       animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 2, repeat: Infinity, delay: 0.5 + (i * 0.3) + 0.4 }}
                     />
-                    <text x={l.lx} y={l.y + 4.5} textAnchor="middle" fontSize="11" fill={A_LOCAL} fontWeight="800" fontFamily="Inter, sans-serif">!</text>
+                    <text x={l.lx} y={l.y + 5} textAnchor="middle" fontSize="13" fill={LEAK_COLOR} fontWeight="800" fontFamily="Inter, sans-serif">!</text>
                   </motion.g>
 
                   {/* Right dashed line drawing (Funnel -> Circle) */}
-                  <motion.line x1={l.rx - 28} y1={l.y} x2={l.rx - 10} y2={l.y}
-                    stroke={A_LOCAL} strokeWidth="1" strokeDasharray="3 3" opacity="0.45"
+                  <motion.line x1={l.rx - 28} y1={l.y} x2={l.rx - 12} y2={l.y}
+                    stroke={LEAK_COLOR} strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6"
                     variants={{
                       hidden: { pathLength: 0 },
                       visible: { pathLength: 1, transition: { duration: 0.4 } }
@@ -538,10 +658,10 @@ function PainSection() {
                     }}
                     style={{ originX: `${l.rx}px`, originY: `${l.y}px` }}
                   >
-                    <motion.circle cx={l.rx} cy={l.y} r="10" fill="white" stroke={A_LOCAL} strokeWidth="1.5" 
+                    <motion.circle cx={l.rx} cy={l.y} r="12" fill="white" stroke={LEAK_COLOR} strokeWidth="2" 
                       animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 2, repeat: Infinity, delay: 0.5 + (i * 0.3) + 0.4 }}
                     />
-                    <text x={l.rx} y={l.y + 4.5} textAnchor="middle" fontSize="11" fill={A_LOCAL} fontWeight="800" fontFamily="Inter, sans-serif">!</text>
+                    <text x={l.rx} y={l.y + 5} textAnchor="middle" fontSize="13" fill={LEAK_COLOR} fontWeight="800" fontFamily="Inter, sans-serif">!</text>
                   </motion.g>
 
                   {/* Centre drop-off label */}
@@ -561,14 +681,19 @@ function PainSection() {
               >
                 {/* Arrow below funnel */}
                 <motion.line x1="210" y1="352" x2="210" y2="370"
-                  stroke={A_LOCAL} strokeWidth="1.5" strokeDasharray="3 2" opacity="0.4"
+                  stroke={A_LOCAL} strokeWidth="2" strokeDasharray="4 3" opacity="0.8"
                   style={{ originY: "352px", originX: "210px" }}
                   variants={{
                     hidden: { scaleY: 0 },
                     visible: { scaleY: 1, transition: { duration: 0.3 } }
                   }}
                 />
-                <polygon points="204,370 216,370 210,380" fill={A_LOCAL} opacity="0.4" />
+                <polygon points="204,370 216,370 210,380" fill={A_LOCAL} opacity="0.8" />
+                {/* Animated drip dot */}
+                <motion.circle cx="210" cy="352" r="3" fill={A_LOCAL}
+                  animate={{ cy: [352, 375], opacity: [0, 1, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear", delay: 2.5 }}
+                />
 
                 {/* Bottom caption */}
                 <text x="210" y="392" textAnchor="middle"
@@ -581,6 +706,23 @@ function PainSection() {
           </motion.div>
 
         </div>
+
+        {/* Transitional Element */}
+        <motion.div 
+          className="mt-20 pt-10 border-t border-stone-200/80 text-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={vp}
+          variants={{
+            hidden: { opacity: 0, y: 15 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.3 } }
+          }}
+        >
+          <p className="font-playfair italic text-2xl md:text-3xl" style={{ color: '#0d554e' }}>
+            This is the industry average. Here's what Growzzy changes.
+          </p>
+        </motion.div>
+
       </div>
     </section>
   )

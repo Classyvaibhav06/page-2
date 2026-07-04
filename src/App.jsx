@@ -314,7 +314,7 @@ function Hero() {
           <div className="mt-12 flex flex-nowrap items-center gap-2 text-[10px] md:text-xs uppercase tracking-wide font-semibold text-stone-400 overflow-x-auto">
             <span className="shrink-0">200+ Clinics</span>
             <span className="shrink-0 border-l border-gray-300 pl-2">3x Avg. Bookings</span>
-            <span className="shrink-0 border-l border-gray-300 pl-2">Delhi · Mumbai · Bangalore</span>
+            <span className="shrink-0 border-l border-gray-300 pl-2">Delhi, India</span>
           </div>
 
         </div>
@@ -791,26 +791,11 @@ function Testimonials() {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const chartData = [
-  { name: 'United States', contributed: 15, pledged: 10.5 },
-  { name: 'United Kingdom', contributed: 0, pledged: 19 },
-  { name: 'European Commission', contributed: 13.5, pledged: 0 },
-  { name: 'Canada', contributed: 10, pledged: 0 },
-  { name: 'Russian Federation', contributed: 5, pledged: 0 },
-  { name: 'Germany', contributed: 4.8, pledged: 0 },
-  { name: 'Japan', contributed: 4.8, pledged: 0 },
-  { name: 'Sweden', contributed: 3.5, pledged: 0 },
-  { name: 'Denmark', contributed: 1.8, pledged: 0 },
-  { name: 'Netherlands', contributed: 1.8, pledged: 0 },
-  { name: 'Funds by UN Agencies', contributed: 1.5, pledged: 0 },
-  { name: 'Finland', contributed: 1.2, pledged: 0 },
-  { name: 'Switzerland', contributed: 1.2, pledged: 0 },
-  { name: 'Norway', contributed: 1, pledged: 0 },
-  { name: 'Estonia', contributed: 0.5, pledged: 0 },
-  { name: 'Belgium', contributed: 0.5, pledged: 0 },
-  { name: 'Private Donations', contributed: 0.3, pledged: 0 },
-  { name: 'Czech Republic', contributed: 0.2, pledged: 0 },
-  { name: 'Italy', contributed: 0.1, pledged: 0 },
-  { name: 'Austria', contributed: 0.1, pledged: 0 },
+  { name: 'India', contributed: 28, pledged: 0 },
+  { name: 'UAE', contributed: 18, pledged: 6 },
+  { name: 'USA', contributed: 12, pledged: 8 },
+  { name: 'UK', contributed: 10, pledged: 4 },
+  { name: 'Singapore', contributed: 7, pledged: 3 },
 ];
 const metrics = [
   { v: '$3.80', l: 'Avg CPL', icon: <CircleDollarSign className="w-5 h-5" style={{ color: A }} /> },
@@ -972,77 +957,41 @@ function About() {
                 </div>
               </div>
 
-              {/* Chart Body */}
-              <div className="relative flex h-[240px] select-none pb-16">
-                {/* Y-Axis Labels */}
-                <div className="flex flex-col justify-between text-[10px] text-stone-400 font-semibold w-8 h-[140px] text-right pr-2">
-                  <span>30</span>
-                  <span>25</span>
-                  <span>20</span>
-                  <span>15</span>
-                  <span>10</span>
-                  <span>5</span>
-                  <span>0</span>
-                </div>
-
-                {/* Chart Area */}
-                <div className="relative flex-1 h-[140px] border-b border-stone-300">
-                  {/* Grid Lines */}
-                  <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                    {[...Array(6)].map((_, idx) => (
-                      <div key={idx} className="w-full border-t border-stone-200/60" />
-                    ))}
-                  </div>
-
-                  {/* Bars Container */}
-                  <div className="absolute inset-x-2 bottom-0 top-0 flex items-end justify-between">
-                    {chartData.map((item, idx) => {
-                      const total = item.contributed + item.pledged;
-                      const contributedPct = (item.contributed / 30) * 100;
-                      const pledgedPct = (item.pledged / 30) * 100;
-                      
-                      return (
-                        <div key={idx} className="flex flex-col items-center flex-1 group relative h-full justify-end px-[1px]">
-                          {/* Stacked Bar */}
-                          <div className="w-1.5 sm:w-2.5 flex flex-col justify-end h-full origin-bottom">
-                            {/* Pledged Part */}
-                            {item.pledged > 0 && (
-                              <motion.div
-                                initial={{ height: 0 }}
-                                animate={barsVisible ? { height: `${pledgedPct}%` } : {}}
-                                transition={{ duration: 0.6, delay: idx * 0.03 }}
-                                className="bg-[#fca5a5] rounded-t-[1px]"
-                                style={{ width: '100%' }}
-                              />
-                            )}
-                            {/* Contributed Part */}
-                            {item.contributed > 0 && (
-                              <motion.div
-                                initial={{ height: 0 }}
-                                animate={barsVisible ? { height: `${contributedPct}%` } : {}}
-                                transition={{ duration: 0.6, delay: idx * 0.03 }}
-                                className="bg-[#C41E3A] rounded-t-[1px]"
-                                style={{ width: '100%' }}
-                              />
-                            )}
-                          </div>
-
-                          {/* Label (Rotated) */}
-                          <div className="absolute top-[144px] origin-center -rotate-90 whitespace-nowrap text-[8px] font-semibold text-stone-500 tracking-tight translate-y-5">
-                            {item.name}
-                          </div>
-
-                          {/* Tooltip */}
-                          <div className="absolute bottom-full mb-1 bg-stone-800 text-white text-[9px] rounded px-1.5 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-30 shadow-md">
-                            <span className="font-bold">{item.name}</span><br />
-                            {item.contributed > 0 && `Contributed: $${item.contributed}M`}<br />
-                            {item.pledged > 0 && `Pledged: $${item.pledged}M`}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+              {/* Horizontal Bar Chart */}
+              <div className="space-y-3 mb-6">
+                {chartData.map((item, idx) => {
+                  const max = 30
+                  const contributedPct = (item.contributed / max) * 100
+                  const pledgedPct = (item.pledged / max) * 100
+                  return (
+                    <div key={idx} className="flex items-center gap-3">
+                      {/* Country label */}
+                      <span className="text-[11px] font-semibold text-stone-600 w-16 flex-shrink-0 text-right">{item.name}</span>
+                      {/* Bar track */}
+                      <div className="flex-1 h-5 bg-stone-100 rounded-full overflow-hidden relative">
+                        {/* Contributed bar */}
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={barsVisible ? { width: `${contributedPct}%` } : {}}
+                          transition={{ duration: 0.7, delay: idx * 0.1, ease: 'easeOut' }}
+                          className="absolute left-0 top-0 h-full bg-[#C41E3A] rounded-full"
+                        />
+                        {/* Pledged extension */}
+                        {item.pledged > 0 && (
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={barsVisible ? { width: `${contributedPct + pledgedPct}%` } : {}}
+                            transition={{ duration: 0.7, delay: idx * 0.1 + 0.1, ease: 'easeOut' }}
+                            className="absolute left-0 top-0 h-full bg-[#fca5a5] rounded-full"
+                            style={{ zIndex: 0 }}
+                          />
+                        )}
+                      </div>
+                      {/* Value */}
+                      <span className="text-[10px] font-bold text-stone-400 w-7 flex-shrink-0">{item.contributed + item.pledged}%</span>
+                    </div>
+                  )
+                })}
               </div>
 
                 {/* Metric chips */}
@@ -1226,7 +1175,7 @@ function Footer() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span>Delhi · Mumbai · Bangalore</span>
+                <span>Delhi, India</span>
               </div>
             </div>
           </div>

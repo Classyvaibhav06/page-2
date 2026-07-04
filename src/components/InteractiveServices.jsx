@@ -109,9 +109,24 @@ export function OrbitalServices() {
   const [rotationAngle, setRotationAngle] = useState(0)
   const [autoRotate, setAutoRotate] = useState(true)
   const [pulseEffect, setPulseEffect] = useState({})
+  const [scale, setScale] = useState(1)
   const containerRef = useRef(null)
   const orbitRef = useRef(null)
   const nodeRefs = useRef({})
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth
+      if (width < 380) setScale(0.55)
+      else if (width < 450) setScale(0.65)
+      else if (width < 640) setScale(0.75)
+      else if (width < 800) setScale(0.85)
+      else setScale(1)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     let timer
@@ -172,6 +187,35 @@ export function OrbitalServices() {
     }
   }
 
+  // Close on scroll or click outside
+  useEffect(() => {
+    if (!expandedId) return
+
+    const handleScroll = () => {
+      setExpandedId(null)
+      setAutoRotate(true)
+      setPulseEffect({})
+    }
+
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setExpandedId(null)
+        setAutoRotate(true)
+        setPulseEffect({})
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('touchstart', handleClickOutside, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+    }
+  }, [expandedId])
+
   const expandedItem = servicesData.find(s => s.id === expandedId)
 
   return (
@@ -208,10 +252,11 @@ export function OrbitalServices() {
       >
         <div
           ref={orbitRef}
-          className="relative flex items-center justify-center"
-          style={{ width: '600px', height: '600px' }}
+          className="relative flex items-center justify-center transition-all duration-300"
+          style={{ width: `${600 * scale}px`, height: `${600 * scale}px` }}
         >
-          {/* Orbit rings */}
+          <div className="absolute inset-0 flex items-center justify-center" style={{ transform: `scale(${scale})`, transformOrigin: 'center' }}>
+            {/* Orbit rings */}
           <div className="absolute rounded-full border border-stone-200 pointer-events-none"
             style={{ width: '480px', height: '480px' }} />
           <div className="absolute rounded-full border border-stone-100 pointer-events-none"
@@ -380,6 +425,7 @@ export function OrbitalServices() {
               </div>
             )
           })}
+          </div>
         </div>
       </div>
 

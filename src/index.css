@@ -99,3 +99,24 @@
   --muted-foreground: var(--light-100);
 }
 
+/* ── Suppress video controls / play-button overlay on mobile ── */
+video::-webkit-media-controls,
+video::-webkit-media-controls-enclosure,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls-play-button,
+video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ── RotatingText – ensure inline characters don't clip ── */
+.text-rotate {
+  display: inline-flex !important;
+  white-space: nowrap !important;
+}
+.text-rotate-element {
+  display: inline-block;
+  will-change: transform, opacity;
+}

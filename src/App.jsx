@@ -4,7 +4,7 @@ import { useInView } from 'framer-motion'
 
 import CircularGallery from './components/CircularGallery'
 import { SparklesText } from './components/ui/sparkles-text'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import ScrollStack, { ScrollStackItem } from './components/ScrollStack'
 import { TestimonialsColumn } from './components/ui/testimonials-columns-1'
 import { OrbitalServices as Services } from './components/InteractiveServices'
@@ -17,7 +17,7 @@ import './components/ui/animated-link-button.css'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
-import { CircleDollarSign, TrendingUp, Target, Trophy, MapPin, Search } from 'lucide-react'
+import { CircleDollarSign, TrendingUp, Target, Trophy, MapPin, Search, Menu, X } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -101,9 +101,9 @@ function GrowzzyLogo() {
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // NAVBAR
-// ═══════════════════════════════════════════════════════════════════════════════
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -122,10 +122,10 @@ function Navbar() {
     <div
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
       style={{
-        background: scrolled ? 'rgba(255,255,255,0.97)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(0,0,0,0.06)' : 'none',
-        boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.06)' : 'none',
+        background: scrolled || mobileMenuOpen ? 'rgba(255,255,255,0.97)' : 'transparent',
+        backdropFilter: scrolled || mobileMenuOpen ? 'blur(12px)' : 'none',
+        borderBottom: scrolled || mobileMenuOpen ? '1px solid rgba(0,0,0,0.06)' : 'none',
+        boxShadow: scrolled && !mobileMenuOpen ? '0 2px 20px rgba(0,0,0,0.06)' : 'none',
       }}
     >
       <div className="max-w-[1440px] mx-auto px-6 py-3 flex items-center justify-between">
@@ -139,7 +139,7 @@ function Navbar() {
               key={link.label}
               href={link.href}
               className="text-sm font-medium tracking-wide transition-colors duration-200 relative group"
-              style={{ color: scrolled ? '#44403c' : '#292524' }}
+              style={{ color: scrolled || mobileMenuOpen ? '#44403c' : '#292524' }}
             >
               {link.label}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full" style={{ backgroundColor: A }}></span>
@@ -147,12 +147,63 @@ function Navbar() {
           ))}
         </nav>
 
-        {/* CTA */}
-        <BtnPrimary href="https://calendly.com/growzzymedia" target="_blank" rel="noopener noreferrer" className="!py-2 md:!py-2.5 !px-3 md:!px-6 !text-xs md:!text-sm whitespace-nowrap">
-          <span className="hidden sm:inline">Get a Free Audit</span>
-          <span className="sm:hidden">Get Audit</span>
-        </BtnPrimary>
+        {/* CTA & Mobile Menu Toggle */}
+        <div className="flex items-center gap-3">
+          <BtnPrimary href="https://calendly.com/growzzymedia" target="_blank" rel="noopener noreferrer" className="!py-2 md:!py-2.5 !pl-6 !pr-9 md:!pl-6 md:!pr-12 !text-xs md:!text-sm whitespace-nowrap">
+            <span className="hidden sm:inline">Get a Free Audit</span>
+            <span className="sm:hidden">Get Audit</span>
+          </BtnPrimary>
+
+          {/* Hamburger Icon */}
+          <button 
+            className="md:hidden p-1 text-stone-800 focus:outline-none transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+            style={{ color: scrolled || mobileMenuOpen ? '#292524' : '#292524' }}
+          >
+            {mobileMenuOpen ? <X size={26} strokeWidth={2} /> : <Menu size={26} strokeWidth={2} />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="md:hidden overflow-hidden bg-white/95 backdrop-blur-md border-b border-stone-100/50 shadow-xl absolute top-full left-0 w-full"
+          >
+            <div className="flex flex-col py-6 px-8 gap-6">
+              {links.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-lg font-semibold tracking-wide text-stone-800 hover:text-[#C41E3A] transition-colors"
+                >
+                  {link.label}
+                </a>
+              ))}
+              
+              {/* Mobile Social Links */}
+              <div className="flex gap-4 pt-4 mt-2 border-t border-stone-200/50">
+                <a href="https://wa.me/919259737609" className="text-stone-400 hover:text-[#C41E3A]">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.503-5.739-1.45L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.859.002-2.637-1.019-5.114-2.876-6.973-1.857-1.859-4.335-2.88-6.97-2.882-5.437 0-9.863 4.42-9.867 9.86-.001 1.774.475 3.503 1.378 5.027L1.93 21.025l5.228-1.378-.511-.493zm11.536-7.078c-.301-.15-1.78-.879-2.056-.979-.275-.1-.475-.15-.675.15-.2.3-.775.979-.95 1.179-.175.2-.35.225-.65.075-1.02-.515-1.74-.775-2.425-1.425-.567-.538-.857-1.127-1.057-1.427-.2-.3-.022-.462.128-.612.135-.135.301-.35.45-.525.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.675-1.625-.925-2.225-.244-.589-.491-.51-.675-.519-.174-.009-.374-.01-.574-.01-.2 0-.525.075-.8.375-.275.3-1.05 1.025-1.05 2.5s1.075 2.9 1.225 3.1c.15.2 2.11 3.22 5.11 4.52 1.42.615 2.235.69 3.035.57.8-.12 1.78-.727 2.03-1.43.25-.7.25-1.3.175-1.425-.075-.125-.275-.2-.575-.35z"/></svg>
+                </a>
+                <a href="https://www.linkedin.com/company/growzzy-media/" className="text-stone-400 hover:text-[#C41E3A]">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://www.facebook.com/Growzzymedia" className="text-stone-400 hover:text-[#C41E3A]">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" /></svg>
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -187,6 +238,8 @@ function Hero() {
         <video
           src="/video.mp4"
           autoPlay loop muted playsInline
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
           className="w-full h-full object-cover"
           style={{ objectPosition: '58% center' }}
         />
@@ -218,28 +271,29 @@ function Hero() {
                 className="inline-block relative align-middle mx-1 md:mx-2"
                 style={{
                   background: 'transparent',
-                  width: '5.2em',
+                  display: 'inline-flex',
+                  minWidth: '6em',
+                  width: 'auto',
                   height: '1.25em',
-                  overflow: 'hidden',
+                  overflow: 'visible',
+                  whiteSpace: 'nowrap',
                   transform: 'translateY(-2px)'
                 }}
               >
-                <span className="absolute inset-0 flex items-center justify-center">
-                  <RotatingText
-                    texts={['Marketing', 'Ad Strategy', 'Funnel', 'Content', 'Growth']}
-                    mainClassName="font-playfair font-bold italic block"
-                    elementLevelClassName="text-inherit"
-                    splitBy="characters"
-                    staggerDuration={0.025}
-                    staggerFrom="first"
-                    rotationInterval={2800}
-                    transition={{ type: 'spring', damping: 20, stiffness: 260 }}
-                    initial={{ y: '110%', opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: '-110%', opacity: 0 }}
-                    style={{ color: HR, fontSize: 'inherit', lineHeight: '1' }}
-                  />
-                </span>
+                <RotatingText
+                  texts={['Marketing', 'Ad Strategy', 'Funnel', 'Content', 'Growth']}
+                  mainClassName="font-playfair font-bold italic block"
+                  elementLevelClassName="text-inherit"
+                  splitBy="characters"
+                  staggerDuration={0.025}
+                  staggerFrom="first"
+                  rotationInterval={2800}
+                  transition={{ type: 'spring', damping: 20, stiffness: 260 }}
+                  initial={{ y: '110%', opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: '-110%', opacity: 0 }}
+                  style={{ color: HR, fontSize: 'inherit', lineHeight: '1', whiteSpace: 'nowrap' }}
+                />
               </span>{' '}
               Isn't.
             </span>
@@ -257,10 +311,10 @@ function Hero() {
           </div>
 
           {/* Trust strip */}
-          <div className="mt-12 flex flex-wrap items-center gap-3 text-xs uppercase tracking-wide font-semibold text-stone-400">
-            <span>200+ Clinics</span>
-            <span className="border-l border-gray-300 pl-3">3x Avg. Bookings</span>
-            <span className="border-l border-gray-300 pl-3">Delhi · Mumbai · Bangalore</span>
+          <div className="mt-12 flex flex-nowrap items-center gap-2 text-[10px] md:text-xs uppercase tracking-wide font-semibold text-stone-400 overflow-x-auto">
+            <span className="shrink-0">200+ Clinics</span>
+            <span className="shrink-0 border-l border-gray-300 pl-2">3x Avg. Bookings</span>
+            <span className="shrink-0 border-l border-gray-300 pl-2">Delhi · Mumbai · Bangalore</span>
           </div>
 
         </div>
@@ -1092,7 +1146,7 @@ function Footer() {
               {[
                 {
                   name: 'LinkedIn',
-                  href: '#',
+                  href: 'https://www.linkedin.com/company/growzzy-media/posts/?feedView=all&viewAsMember=true',
                   svg: (
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
@@ -1120,11 +1174,11 @@ function Footer() {
                   ),
                 },
                 {
-                  name: 'Twitter',
-                  href: '#',
+                  name: 'Facebook',
+                  href: 'https://www.facebook.com/Growzzymedia',
                   svg: (
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                      <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" />
                     </svg>
                   ),
                 },

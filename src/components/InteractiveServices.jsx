@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { ArrowRight, Link, Zap, Target, Shield, TrendingUp, Users, Star, BarChart2 } from 'lucide-react'
 import { AnimatedButton } from '@/components/ui/animated-button'
 
@@ -104,29 +104,23 @@ const servicesData = [
   },
 ]
 
-const RADIUS = 220
-
 export function OrbitalServices() {
   const [expandedId, setExpandedId] = useState(null)
+  const [rotationAngle, setRotationAngle] = useState(0)
+  const [autoRotate, setAutoRotate] = useState(true)
   const [pulseEffect, setPulseEffect] = useState({})
   const [scale, setScale] = useState(1)
-
   const containerRef = useRef(null)
   const orbitRef = useRef(null)
-  const nodeRefs = useRef({})       // refs to each node DOM element
-  const angleRef = useRef(0)        // current rotation angle (no state!)
-  const autoRotateRef = useRef(true)
-  const rafRef = useRef(null)
-  const lastTimeRef = useRef(null)
+  const nodeRefs = useRef({})
 
-  // Responsive scale
   useEffect(() => {
     const handleResize = () => {
-      const w = window.innerWidth
-      if (w < 380) setScale(0.52)
-      else if (w < 450) setScale(0.62)
-      else if (w < 640) setScale(0.72)
-      else if (w < 800) setScale(0.85)
+      const width = window.innerWidth
+      if (width < 380) setScale(0.55)
+      else if (width < 450) setScale(0.65)
+      else if (width < 640) setScale(0.75)
+      else if (width < 800) setScale(0.85)
       else setScale(1)
     }
     handleResize()
@@ -134,43 +128,26 @@ export function OrbitalServices() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // RAF-based rotation — NO React state updates, pure DOM mutation
-  const animate = useCallback((timestamp) => {
-    if (!autoRotateRef.current) {
-      rafRef.current = requestAnimationFrame(animate)
-      return
-    }
-    if (lastTimeRef.current !== null) {
-      const delta = timestamp - lastTimeRef.current
-      // ~0.3 deg per 16ms frame ≈ same visual speed as before
-      angleRef.current = (angleRef.current + (delta / 16) * 0.25) % 360
-    }
-    lastTimeRef.current = timestamp
-
-    // Directly mutate each node's transform without touching React state
-    servicesData.forEach((item, index) => {
-      const el = nodeRefs.current[item.id]
-      if (!el) return
-      const angle = ((index / servicesData.length) * 360 + angleRef.current) % 360
-      const radian = (angle * Math.PI) / 180
-      const x = RADIUS * Math.cos(radian)
-      const y = RADIUS * Math.sin(radian)
-      const zIndex = Math.round(100 + 50 * Math.cos(radian))
-      const opacity = Math.max(0.4, Math.min(1, 0.4 + 0.6 * ((1 + Math.sin(radian)) / 2)))
-      el.style.transform = `translate(${x}px, ${y}px)`
-      el.style.zIndex = zIndex
-      el.style.opacity = opacity
-    })
-
-    rafRef.current = requestAnimationFrame(animate)
-  }, [])
-
   useEffect(() => {
-    rafRef.current = requestAnimationFrame(animate)
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    let timer
+    if (autoRotate) {
+      timer = setInterval(() => {
+        setRotationAngle(prev => Number(((prev + 0.25) % 360).toFixed(3)))
+      }, 50)
     }
-  }, [animate])
+    return () => clearInterval(timer)
+  }, [autoRotate])
+
+  const calculateNodePosition = (index, total) => {
+    const angle = ((index / total) * 360 + rotationAngle) % 360
+    const radius = 220
+    const radian = (angle * Math.PI) / 180
+    const x = radius * Math.cos(radian)
+    const y = radius * Math.sin(radian)
+    const zIndex = Math.round(100 + 50 * Math.cos(radian))
+    const opacity = Math.max(0.4, Math.min(1, 0.4 + 0.6 * ((1 + Math.sin(radian)) / 2)))
+    return { x, y, angle, zIndex, opacity }
+  }
 
   const getRelatedIds = (id) => {
     const item = servicesData.find(s => s.id === id)
@@ -182,51 +159,62 @@ export function OrbitalServices() {
     return getRelatedIds(expandedId).includes(id)
   }
 
-  const closeExpanded = useCallback(() => {
-    setExpandedId(null)
-    autoRotateRef.current = true
-    lastTimeRef.current = null
-    setPulseEffect({})
-  }, [])
-
   const toggleItem = (id) => {
     if (expandedId === id) {
-      closeExpanded()
+      setExpandedId(null)
+      setAutoRotate(true)
+      setPulseEffect({})
     } else {
       setExpandedId(id)
-      autoRotateRef.current = false
+      setAutoRotate(false)
       const related = getRelatedIds(id)
       const pulse = {}
       related.forEach(r => { pulse[r] = true })
       setPulseEffect(pulse)
-      // Snap angle so selected node is at top (270°)
+
+      // center the node
       const nodeIndex = servicesData.findIndex(s => s.id === id)
-      angleRef.current = 270 - (nodeIndex / servicesData.length) * 360
+      const targetAngle = (nodeIndex / servicesData.length) * 360
+      setRotationAngle(270 - targetAngle)
     }
   }
 
   const handleBgClick = (e) => {
     if (e.target === containerRef.current || e.target === orbitRef.current) {
-      closeExpanded()
+      setExpandedId(null)
+      setAutoRotate(true)
+      setPulseEffect({})
     }
   }
 
-  // Close on scroll or outside tap
+  // Close on scroll or click outside
   useEffect(() => {
     if (!expandedId) return
-    const onScroll = () => closeExpanded()
-    const onOutside = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) closeExpanded()
+
+    const handleScroll = () => {
+      setExpandedId(null)
+      setAutoRotate(true)
+      setPulseEffect({})
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    document.addEventListener('mousedown', onOutside)
-    document.addEventListener('touchstart', onOutside, { passive: true })
+
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setExpandedId(null)
+        setAutoRotate(true)
+        setPulseEffect({})
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('touchstart', handleClickOutside, { passive: true })
+
     return () => {
-      window.removeEventListener('scroll', onScroll)
-      document.removeEventListener('mousedown', onOutside)
-      document.removeEventListener('touchstart', onOutside)
+      window.removeEventListener('scroll', handleScroll)
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
     }
-  }, [expandedId, closeExpanded])
+  }, [expandedId])
 
   const expandedItem = servicesData.find(s => s.id === expandedId)
 
@@ -253,7 +241,7 @@ export function OrbitalServices() {
           Boost Your Clinic<br />
           <span className="italic" style={{ color: A }}>with Our Expertise</span>
         </h2>
-        <p className="text-stone-400 mt-4 text-sm">Tap any service to explore · Related services pulse when selected</p>
+        <p className="text-stone-400 mt-4 text-sm">Click any service node to explore · Related services pulse when selected</p>
       </div>
 
       {/* Orbital canvas */}
@@ -264,187 +252,179 @@ export function OrbitalServices() {
       >
         <div
           ref={orbitRef}
-          className="relative flex items-center justify-center"
+          className="relative flex items-center justify-center transition-all duration-300"
           style={{ width: `${600 * scale}px`, height: `${600 * scale}px` }}
         >
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ transform: `scale(${scale})`, transformOrigin: 'center', willChange: 'transform' }}
-          >
+          <div className="absolute inset-0 flex items-center justify-center" style={{ transform: `scale(${scale})`, transformOrigin: 'center' }}>
             {/* Orbit rings */}
-            <div className="absolute rounded-full border border-stone-200 pointer-events-none"
-              style={{ width: '480px', height: '480px' }} />
-            <div className="absolute rounded-full border border-stone-100 pointer-events-none"
-              style={{ width: '380px', height: '380px' }} />
+          <div className="absolute rounded-full border border-stone-200 pointer-events-none"
+            style={{ width: '480px', height: '480px' }} />
+          <div className="absolute rounded-full border border-stone-100 pointer-events-none"
+            style={{ width: '380px', height: '380px' }} />
 
-            {/* Center orb */}
-            <div className="absolute w-20 h-20 rounded-full flex items-center justify-center z-10 pointer-events-none"
-              style={{ background: `radial-gradient(circle, ${A}, ${AB})`, boxShadow: `0 0 50px ${A}30` }}>
-              <div className="absolute w-24 h-24 rounded-full border animate-ping opacity-20" style={{ borderColor: A }} />
-              <div className="absolute w-28 h-28 rounded-full border animate-ping opacity-10" style={{ borderColor: A, animationDelay: '0.6s' }} />
-              <BarChart2 className="w-8 h-8 text-white/90" />
-            </div>
+          {/* Center orb */}
+          <div className="absolute w-20 h-20 rounded-full flex items-center justify-center z-10 pointer-events-none"
+            style={{ background: `radial-gradient(circle, ${A}, ${AB})`, boxShadow: `0 0 50px ${A}30` }}>
+            <div className="absolute w-24 h-24 rounded-full border animate-ping opacity-20" style={{ borderColor: A }} />
+            <div className="absolute w-28 h-28 rounded-full border animate-ping opacity-10" style={{ borderColor: A, animationDelay: '0.6s' }} />
+            <BarChart2 className="w-8 h-8 text-white/90" />
+          </div>
 
-            {/* Center label */}
-            <div className="absolute z-20 pointer-events-none text-center" style={{ top: '52%' }}>
-              <p className="text-stone-400 text-[10px] font-semibold uppercase tracking-widest mt-12">
-                {expandedItem ? expandedItem.title : 'MedSpa Growth'}
-              </p>
-            </div>
+          {/* Center label */}
+          <div className="absolute z-20 pointer-events-none text-center" style={{ top: '52%' }}>
+            <p className="text-stone-400 text-[10px] font-semibold uppercase tracking-widest mt-12">
+              {expandedItem ? expandedItem.title : 'MedSpa Growth'}
+            </p>
+          </div>
 
-            {/* Nodes — initial position set here; RAF mutates transform directly */}
-            {servicesData.map((item, index) => {
-              const isOpen = expandedId === item.id
-              const related = isRelated(item.id)
-              const isPulsing = pulseEffect[item.id]
-              const Icon = item.icon
-              // Static initial position calculation for first render
-              const initAngle = ((index / servicesData.length) * 360) % 360
-              const initRadian = (initAngle * Math.PI) / 180
-              const initX = RADIUS * Math.cos(initRadian)
-              const initY = RADIUS * Math.sin(initRadian)
+          {/* Nodes */}
+          {servicesData.map((item, index) => {
+            const pos = calculateNodePosition(index, servicesData.length)
+            const isOpen = expandedId === item.id
+            const related = isRelated(item.id)
+            const isPulsing = pulseEffect[item.id]
+            const Icon = item.icon
 
-              return (
+            return (
+              <div
+                key={item.id}
+                ref={el => nodeRefs.current[item.id] = el}
+                className="absolute transition-all duration-700 cursor-pointer"
+                style={{
+                  transform: `translate(${pos.x}px, ${pos.y}px)`,
+                  zIndex: isOpen ? 200 : pos.zIndex,
+                  opacity: isOpen ? 1 : pos.opacity,
+                }}
+                onClick={(e) => { e.stopPropagation(); toggleItem(item.id) }}
+              >
+                {/* Glow halo */}
                 <div
-                  key={item.id}
-                  ref={el => nodeRefs.current[item.id] = el}
-                  className="absolute cursor-pointer"
+                  className={`absolute rounded-full pointer-events-none ${isPulsing ? 'animate-pulse' : ''}`}
                   style={{
-                    transform: `translate(${initX}px, ${initY}px)`,
-                    zIndex: isOpen ? 200 : 100,
-                    opacity: isOpen ? 1 : 0.7,
-                    willChange: 'transform, opacity',
+                    width: `${item.energy * 0.5 + 44}px`,
+                    height: `${item.energy * 0.5 + 44}px`,
+                    left: `-${(item.energy * 0.5 + 44 - 40) / 2}px`,
+                    top: `-${(item.energy * 0.5 + 44 - 40) / 2}px`,
+                    background: `radial-gradient(circle, ${isOpen ? A + '20' : 'rgba(0,0,0,0.04)'} 0%, transparent 70%)`,
                   }}
-                  onClick={(e) => { e.stopPropagation(); toggleItem(item.id) }}
+                />
+
+                {/* Node button */}
+                <div
+                  className={`w-11 h-11 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${isOpen ? 'scale-150' : related ? 'scale-110 animate-pulse' : 'scale-100'}`}
+                  style={{
+                    background: isOpen ? A : related ? `${A}15` : 'white',
+                    borderColor: isOpen ? A : related ? A : '#e7e5e4',
+                    boxShadow: isOpen ? `0 0 30px ${A}40` : related ? `0 0 16px ${A}30` : '0 2px 12px rgba(0,0,0,0.08)',
+                  }}
                 >
-                  {/* Glow halo */}
-                  <div
-                    className={`absolute rounded-full pointer-events-none ${isPulsing ? 'animate-pulse' : ''}`}
-                    style={{
-                      width: `${item.energy * 0.5 + 44}px`,
-                      height: `${item.energy * 0.5 + 44}px`,
-                      left: `-${(item.energy * 0.5 + 44 - 40) / 2}px`,
-                      top: `-${(item.energy * 0.5 + 44 - 40) / 2}px`,
-                      background: `radial-gradient(circle, ${isOpen ? A + '20' : 'rgba(0,0,0,0.04)'} 0%, transparent 70%)`,
-                    }}
-                  />
+                  <Icon size={16} style={{ color: isOpen ? 'white' : related ? A : '#78716c' }} />
+                </div>
 
-                  {/* Node button */}
-                  <div
-                    className={`w-11 h-11 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${isOpen ? 'scale-150' : related ? 'scale-110 animate-pulse' : 'scale-100'}`}
-                    style={{
-                      background: isOpen ? A : related ? `${A}15` : 'white',
-                      borderColor: isOpen ? A : related ? A : '#e7e5e4',
-                      boxShadow: isOpen ? `0 0 30px ${A}40` : related ? `0 0 16px ${A}30` : '0 2px 12px rgba(0,0,0,0.08)',
-                    }}
-                  >
-                    <Icon size={16} style={{ color: isOpen ? 'white' : related ? A : '#78716c' }} />
-                  </div>
+                {/* Label */}
+                <div
+                  className={`absolute whitespace-nowrap text-[11px] font-bold tracking-wider transition-all duration-300 ${isOpen ? 'scale-125' : ''}`}
+                  style={{
+                    top: '48px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    color: isOpen ? A : '#78716c',
+                  }}
+                >
+                  {item.title}
+                </div>
 
-                  {/* Label */}
+                {/* Expanded card */}
+                {isOpen && (
                   <div
-                    className={`absolute whitespace-nowrap text-[11px] font-bold tracking-wider transition-all duration-300 ${isOpen ? 'scale-125' : ''}`}
+                    className="absolute w-72 rounded-2xl overflow-hidden"
                     style={{
-                      top: '48px',
+                      top: '72px',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      color: isOpen ? A : '#78716c',
+                      background: 'white',
+                      border: `1px solid ${A}25`,
+                      boxShadow: `0 20px 60px rgba(0,0,0,0.12), 0 0 30px ${A}10`,
                     }}
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    {item.title}
-                  </div>
+                    {/* Connector line */}
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-px h-4" style={{ background: `${A}60` }} />
 
-                  {/* Expanded card */}
-                  {isOpen && (
-                    <div
-                      className="absolute w-72 rounded-2xl overflow-hidden"
-                      style={{
-                        top: '72px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        background: 'white',
-                        border: `1px solid ${A}25`,
-                        boxShadow: `0 20px 60px rgba(0,0,0,0.12), 0 0 30px ${A}10`,
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {/* Connector line */}
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-px h-4" style={{ background: `${A}60` }} />
-
-                      {/* Card header */}
-                      <div className="px-5 pt-4 pb-3 border-b border-stone-100">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
-                            style={{ background: `${A}12`, color: A, border: `1px solid ${A}30` }}>
-                            {item.stat.value} {item.stat.label}
-                          </span>
-                          <Icon size={14} className="text-stone-300" />
-                        </div>
-                        <h4 className="text-stone-900 text-sm font-bold font-playfair">{item.title}</h4>
-                        <p className="text-xs mt-0.5" style={{ color: A }}>{item.subtitle}</p>
+                    {/* Card header */}
+                    <div className="px-5 pt-4 pb-3 border-b border-stone-100">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+                          style={{ background: `${A}12`, color: A, border: `1px solid ${A}30` }}>
+                          {item.stat.value} {item.stat.label}
+                        </span>
+                        <Icon size={14} className="text-stone-300" />
                       </div>
-
-                      {/* Card body */}
-                      <div className="px-5 py-3">
-                        <p className="text-stone-500 text-xs leading-relaxed mb-3">{item.content}</p>
-                        <ul className="space-y-1.5 mb-4">
-                          {item.bullets.map((b, i) => (
-                            <li key={i} className="flex items-center gap-2 text-xs text-stone-500">
-                              <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: A }} />
-                              {b}
-                            </li>
-                          ))}
-                        </ul>
-
-                        {/* Energy bar */}
-                        <div className="mb-3">
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-[10px] text-stone-400 flex items-center gap-1">
-                              <Zap size={9} /> Performance Score
-                            </span>
-                            <span className="text-[10px] font-mono text-stone-400">{item.energy}%</span>
-                          </div>
-                          <div className="w-full h-0.5 bg-stone-100 rounded-full overflow-hidden">
-                            <div className="h-full rounded-full" style={{ width: `${item.energy}%`, background: `linear-gradient(to right, ${A}, #f87171)` }} />
-                          </div>
-                        </div>
-
-                        {/* Related nodes */}
-                        {item.relatedIds.length > 0 && (
-                          <div className="border-t border-stone-100 pt-3">
-                            <div className="flex items-center gap-1 mb-2">
-                              <Link size={9} className="text-stone-400" />
-                              <span className="text-[10px] uppercase tracking-widest text-stone-400">Connected Services</span>
-                            </div>
-                            <div className="flex flex-wrap gap-1.5">
-                              {item.relatedIds.map(relId => {
-                                const rel = servicesData.find(s => s.id === relId)
-                                return (
-                                  <button
-                                    key={relId}
-                                    className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-full transition-all border"
-                                    style={{
-                                      borderColor: `${A}30`,
-                                      color: A,
-                                      background: `${A}08`,
-                                    }}
-                                    onMouseEnter={e => e.currentTarget.style.background = `${A}18`}
-                                    onMouseLeave={e => e.currentTarget.style.background = `${A}08`}
-                                    onClick={(e) => { e.stopPropagation(); toggleItem(relId) }}
-                                  >
-                                    {rel?.title} <ArrowRight size={8} />
-                                  </button>
-                                )
-                              })}
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                      <h4 className="text-stone-900 text-sm font-bold font-playfair">{item.title}</h4>
+                      <p className="text-xs mt-0.5" style={{ color: A }}>{item.subtitle}</p>
                     </div>
-                  )}
-                </div>
-              )
-            })}
+
+                    {/* Card body */}
+                    <div className="px-5 py-3">
+                      <p className="text-stone-500 text-xs leading-relaxed mb-3">{item.content}</p>
+                      <ul className="space-y-1.5 mb-4">
+                        {item.bullets.map((b, i) => (
+                          <li key={i} className="flex items-center gap-2 text-xs text-stone-500">
+                            <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: A }} />
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+
+                      {/* Energy bar */}
+                      <div className="mb-3">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-[10px] text-stone-400 flex items-center gap-1">
+                            <Zap size={9} /> Performance Score
+                          </span>
+                          <span className="text-[10px] font-mono text-stone-400">{item.energy}%</span>
+                        </div>
+                        <div className="w-full h-0.5 bg-stone-100 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full" style={{ width: `${item.energy}%`, background: `linear-gradient(to right, ${A}, #f87171)` }} />
+                        </div>
+                      </div>
+
+                      {/* Related nodes */}
+                      {item.relatedIds.length > 0 && (
+                        <div className="border-t border-stone-100 pt-3">
+                          <div className="flex items-center gap-1 mb-2">
+                            <Link size={9} className="text-stone-400" />
+                            <span className="text-[10px] uppercase tracking-widest text-stone-400">Connected Services</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {item.relatedIds.map(relId => {
+                              const rel = servicesData.find(s => s.id === relId)
+                              return (
+                                <button
+                                  key={relId}
+                                  className="flex items-center gap-1 text-[10px] px-2 py-1 rounded-full transition-all border"
+                                  style={{
+                                    borderColor: `${A}30`,
+                                    color: A,
+                                    background: `${A}08`,
+                                  }}
+                                  onMouseEnter={e => e.currentTarget.style.background = `${A}18`}
+                                  onMouseLeave={e => e.currentTarget.style.background = `${A}08`}
+                                  onClick={(e) => { e.stopPropagation(); toggleItem(relId) }}
+                                >
+                                  {rel?.title} <ArrowRight size={8} />
+                                </button>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          })}
           </div>
         </div>
       </div>

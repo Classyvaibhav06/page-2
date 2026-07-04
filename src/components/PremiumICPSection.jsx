@@ -80,7 +80,7 @@ export function PremiumICPSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-8 pt-4 pb-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-8 pt-4 pb-4">
           {journeyPoints.map((point, i) => {
             const Icon = point.icon;
             return (

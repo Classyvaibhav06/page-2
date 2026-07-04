@@ -9,9 +9,10 @@ import ScrollStack, { ScrollStackItem } from './components/ScrollStack'
 import { TestimonialsColumn } from './components/ui/testimonials-columns-1'
 import { OrbitalServices as Services } from './components/InteractiveServices'
 import { PremiumICPSection as ICPSection } from './components/PremiumICPSection'
-import { GlobalReach } from './components/GlobalReach'
 import RotatingText from './components/RotatingText'
-import { Feature108 } from './components/blocks/feature108'
+import TestimonialSlider from './components/ui/testimonial-slider'
+import { AnimatedButton } from './components/ui/animated-button'
+import './components/ui/animated-link-button.css'
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -20,9 +21,9 @@ import { CircleDollarSign, TrendingUp, Target, Trophy, MapPin, Search } from 'lu
 
 gsap.registerPlugin(ScrollTrigger)
 
-const A = '#127369'          // primary accent – deep teal
-const AL = '#12736915'       // accent light tint
-const AB = '#0d554e'         // accent dark (hover)
+const A = '#C41E3A'          // primary accent – crimson red
+const AL = '#C41E3A15'       // accent light tint
+const AB = '#a01530'         // accent dark (hover)
 
 // ─── Reusable icon components ─────────────────────────────────────────────────
 const Chevron = () => (
@@ -52,27 +53,21 @@ function Eyebrow({ children }) {
 }
 
 // ─── Primary button ────────────────────────────────────────────────────────────
-function BtnPrimary({ href, children, className = "" }) {
+function BtnPrimary({ href, children, className = "", ...props }) {
   return (
-    <a
-      href={href}
-      className={`inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-sm text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${className}`}
-      style={{ backgroundColor: A, boxShadow: `0 4px 20px ${A}35` }}
-    >
+    <AnimatedButton href={href} className={className} {...props}>
       {children}
-    </a>
+    </AnimatedButton>
   )
 }
 // ─── Ghost button ──────────────────────────────────────────────────────────────
 function BtnGhost({ href, children }) {
   return (
-    <a
-      href={href}
-      className="inline-flex items-center gap-2 text-sm font-semibold transition-colors duration-200 group"
-      style={{ color: A }}
-    >
-      <span className="flex items-center leading-none">{children}</span>
-      <span className="group-hover:translate-x-1 transition-transform duration-200 flex items-center justify-center"><Chevron /></span>
+    <a href={href} className="animated-link-button">
+      <p data-text={children}>{children}</p>
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+      </svg>
     </a>
   )
 }
@@ -153,7 +148,7 @@ function Navbar() {
         </nav>
 
         {/* CTA */}
-        <BtnPrimary href="#contact" className="!py-2 md:!py-2.5 !px-3 md:!px-6 !text-xs md:!text-sm whitespace-nowrap">
+        <BtnPrimary href="https://calendly.com/growzzymedia" target="_blank" rel="noopener noreferrer" className="!py-2 md:!py-2.5 !px-3 md:!px-6 !text-xs md:!text-sm whitespace-nowrap">
           <span className="hidden sm:inline">Get a Free Audit</span>
           <span className="sm:hidden">Get Audit</span>
         </BtnPrimary>
@@ -167,6 +162,8 @@ function Navbar() {
 // ═══════════════════════════════════════════════════════════════════════════════
 // HERO  — video bg, cream left overlay, text on left (matches reference layout)
 // ═══════════════════════════════════════════════════════════════════════════════
+const HR = '#C41E3A'   // hero crimson red
+
 function Hero() {
   return (
     <section id="home" className="relative w-full md:min-h-screen flex items-center overflow-hidden bg-[#faf8f5]">
@@ -183,12 +180,9 @@ function Hero() {
       </div>
 
       {/* ── Mobile Video Background (Scaled down to fit face on the right) ── */}
-      <div 
-        className="absolute bottom-0 right-0 w-full md:hidden z-0 pointer-events-none" 
-        style={{ 
-          height: '70%',
-          transform: `translateY(-19%)` 
-        }}
+      <div
+        className="absolute bottom-0 right-0 w-full md:hidden z-0 pointer-events-none"
+        style={{ height: '70%', transform: 'translateY(-19%)' }}
       >
         <video
           src="/video.mp4"
@@ -196,39 +190,40 @@ function Hero() {
           className="w-full h-full object-cover"
           style={{ objectPosition: '58% center' }}
         />
-        {/* Fade top edge smoothly into the cream background */}
         <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#faf8f5] to-transparent" />
-        {/* Fade left edge so text remains readable */}
         <div className="absolute inset-y-0 left-0 w-3/4 bg-gradient-to-r from-[#faf8f5] via-[#faf8f5]/80 to-transparent" />
       </div>
 
       {/* ── Content ── */}
       <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 flex flex-col md:flex-row items-center pt-28 pb-20 md:py-0 min-h-[100svh] md:min-h-screen">
-        
+
         {/* Text Block */}
         <div className="w-full md:w-1/2 md:pr-10 lg:pr-12">
+
           {/* Eyebrow */}
-          <Eyebrow>Marketing for Medspas &amp; Cosmetic Clinics</Eyebrow>
+          <p className="flex items-center text-xs font-semibold uppercase mb-5 md:mb-6" style={{ color: HR, letterSpacing: '0.12em' }}>
+            <span className="dot-pulse rounded-full flex-shrink-0 mr-2" style={{ backgroundColor: HR, width: '6px', height: '6px', display: 'inline-block' }} />
+            Marketing for Medspas &amp; Cosmetic Clinics
+          </p>
 
           {/* Headline */}
-          <h1 
+          <h1
             className="font-playfair font-bold text-stone-900 leading-[1.05] mb-6 max-w-[700px]"
             style={{ fontSize: 'clamp(2.25rem, 5vw + 1rem, 4.5rem)' }}
           >
             Your Scalpel Is Precise.<br />
-            <span className="italic" style={{ color: A }}>
+            <span className="italic" style={{ color: HR }}>
               Your{' '}
               <span
                 className="inline-block relative align-middle mx-1 md:mx-2"
                 style={{
                   background: 'transparent',
-                  width: '5.2em', // Responsive width scaling with font size
+                  width: '5.2em',
                   height: '1.25em',
                   overflow: 'hidden',
                   transform: 'translateY(-2px)'
                 }}
               >
-                {/* Absolutely position the text so its animation doesn't shift the baseline of the surrounding text */}
                 <span className="absolute inset-0 flex items-center justify-center">
                   <RotatingText
                     texts={['Marketing', 'Ad Strategy', 'Funnel', 'Content', 'Growth']}
@@ -242,7 +237,7 @@ function Hero() {
                     initial={{ y: '110%', opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: '-110%', opacity: 0 }}
-                    style={{ color: A, fontSize: 'inherit', lineHeight: '1' }}
+                    style={{ color: HR, fontSize: 'inherit', lineHeight: '1' }}
                   />
                 </span>
               </span>{' '}
@@ -257,7 +252,7 @@ function Hero() {
 
           {/* CTAs */}
           <div className="flex flex-wrap items-center gap-6 mb-12 md:mb-0">
-            <BtnPrimary href="#contact" className="!tracking-[0.01em]">Get a Free Growth Audit</BtnPrimary>
+            <BtnPrimary href="https://calendly.com/growzzymedia" target="_blank" rel="noopener noreferrer" className="!tracking-[0.01em]">Get a Free Growth Audit</BtnPrimary>
             <BtnGhost href="#services">Learn More</BtnGhost>
           </div>
 
@@ -270,11 +265,11 @@ function Hero() {
 
         </div>
 
-
       </div>
     </section>
   )
 }
+
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // PAIN SECTION
@@ -382,7 +377,7 @@ function PainSection() {
     },
   ]
 
-  const A_LOCAL = '#127369' // Hero Teal
+  const A_LOCAL = '#C41E3A' // Crimson Red
   const LEAK_COLOR = '#d97706' // Amber-600
 
   const stages = [
@@ -404,7 +399,7 @@ function PainSection() {
   const vp = { once: true, amount: 0.3 }
 
   return (
-    <section id="pain" className="py-24 bg-[#faf8f5] overflow-hidden">
+    <section id="pain" className="py-14 md:py-16 bg-[#faf8f5] overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-6">
         
         {/* 1. Header block */}
@@ -447,7 +442,7 @@ function PainSection() {
             </motion.span>
             <motion.span 
               className="italic block relative overflow-hidden text-[1.15em]" 
-              style={{ color: '#0d554e', paddingRight: '0.1em' }}
+              style={{ color: '#a01530', paddingRight: '0.1em' }}
               variants={{
                 hidden: { opacity: 0, y: 20, clipPath: "polygon(0 0, 0 0, 0 100%, 0% 100%)" },
                 visible: { 
@@ -512,7 +507,7 @@ function PainSection() {
                       variants={{
                         hidden: { textShadow: "0px 0px 0px rgba(0,0,0,0)" },
                         visible: { 
-                          textShadow: ["0px 0px 8px rgba(18,115,105,0.4)", "0px 0px 0px rgba(18,115,105,0)"], 
+                          textShadow: ["0px 0px 8px rgba(196,30,58,0.4)", "0px 0px 0px rgba(196,30,58,0)"], 
                           transition: { duration: 0.6 } 
                         }
                       }}
@@ -707,21 +702,7 @@ function PainSection() {
 
         </div>
 
-        {/* Transitional Element */}
-        <motion.div 
-          className="mt-20 pt-10 border-t border-stone-200/80 text-center"
-          initial="hidden"
-          whileInView="visible"
-          viewport={vp}
-          variants={{
-            hidden: { opacity: 0, y: 15 },
-            visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.3 } }
-          }}
-        >
-          <p className="font-playfair italic text-2xl md:text-3xl" style={{ color: '#0d554e' }}>
-            This is the industry average. Here's what Growzzy changes.
-          </p>
-        </motion.div>
+
 
       </div>
     </section>
@@ -743,93 +724,10 @@ function PainSection() {
 // ═══════════════════════════════════════════════════════════════════════════════
 // TESTIMONIALS
 // ═══════════════════════════════════════════════════════════════════════════════
-const testimonials = [
-  {
-    text: "Growzzy transformed our patient acquisition. We went from a trickle of inquiries to a consistently full calendar within 60 days.",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop",
-    name: "Dr. Priya Sharma",
-    role: "Founder, LuxeAesthetics · Delhi",
-  },
-  {
-    text: "We'd burned money on two other agencies before. Growzzy was different — they actually understood the aesthetic industry and built ads that converted.",
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop",
-    name: "Dr. Arjun Mehta",
-    role: "Director, Aesthetica Clinic · Mumbai",
-  },
-  {
-    text: "The transparency is what I appreciate most. I can see exactly what every rupee is doing. They gave us our first predictable patient pipeline in five years.",
-    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=150&h=150&fit=crop",
-    name: "Dr. Riya Nair",
-    role: "Head of Dermatology, GlowMed · Bangalore",
-  },
-  {
-    text: "The leads we get now are highly qualified. Patients walk in already knowing about the treatments and ready to book their procedure.",
-    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop",
-    name: "Dr. Sameer Khan",
-    role: "Lead Surgeon, Elite Cosmetic · Pune",
-  },
-  {
-    text: "Our hair transplant bookings skyrocketed by 300% after Growzzy took over. Their ad creatives are unmatched in this industry.",
-    image: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=150&h=150&fit=crop",
-    name: "Dr. Neha Gupta",
-    role: "Founder, Hair & Skin Clinic · Delhi",
-  },
-  {
-    text: "They don't just run ads; they built our entire conversion funnel. Our front desk is now closing 40% more consultations than before.",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop",
-    name: "Anjali Desai",
-    role: "Clinic Manager, DermaCare · Mumbai",
-  },
-  {
-    text: "Switching to Growzzy was the best decision for our medspa. We opened a second location entirely funded by the new revenue they generated.",
-    image: "https://images.unsplash.com/photo-1537368910025-7028b9095173?w=150&h=150&fit=crop",
-    name: "Dr. Vikram Singh",
-    role: "CEO, Radiance MedSpa · Bangalore",
-  },
-  {
-    text: "Finally, a marketing partner that speaks our language. They understand patient psychology for elective procedures perfectly.",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop",
-    name: "Dr. Sana Sheikh",
-    role: "Chief Aesthetician, SkinGlow · Hyderabad",
-  },
-  {
-    text: "Their reporting dashboard is incredible. For the first time, I know my exact cost to acquire a booked Botox patient.",
-    image: "https://images.unsplash.com/photo-1618077360395-f3068be8e001?w=150&h=150&fit=crop",
-    name: "Rahul Verma",
-    role: "Operations Head, FaceCraft · Chennai",
-  },
-];
-
-const firstColumn = testimonials.slice(0, 3);
-const secondColumn = testimonials.slice(3, 6);
-const thirdColumn = testimonials.slice(6, 9);
-
 function Testimonials() {
   return (
-    <section id="testimonials" className="py-24 bg-stone-50 overflow-hidden relative">
-      <div className="max-w-[1440px] mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          viewport={{ once: true }}
-          className="flex flex-col items-center justify-center max-w-[540px] mx-auto text-center mb-16 relative z-10"
-        >
-          <Eyebrow>Client Stories</Eyebrow>
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-stone-900 mb-5">
-            What Clinic Owners Say
-          </h2>
-          <p className="text-stone-500 text-lg leading-relaxed">
-            See how we've helped aesthetic practices scale their consultation bookings and grow their revenue.
-          </p>
-        </motion.div>
-
-        <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] h-[650px]">
-          <TestimonialsColumn testimonials={firstColumn} duration={25} />
-          <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={35} />
-          <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={28} />
-        </div>
-      </div>
+    <section id="testimonials" className="relative z-10 bg-[#faf8f5]">
+      <TestimonialSlider />
     </section>
   );
 }
@@ -838,7 +736,28 @@ function Testimonials() {
 // ABOUT
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const barHeights = [32, 48, 40, 62, 54, 78, 68, 88, 74, 95, 84, 100]
+const chartData = [
+  { name: 'United States', contributed: 15, pledged: 10.5 },
+  { name: 'United Kingdom', contributed: 0, pledged: 19 },
+  { name: 'European Commission', contributed: 13.5, pledged: 0 },
+  { name: 'Canada', contributed: 10, pledged: 0 },
+  { name: 'Russian Federation', contributed: 5, pledged: 0 },
+  { name: 'Germany', contributed: 4.8, pledged: 0 },
+  { name: 'Japan', contributed: 4.8, pledged: 0 },
+  { name: 'Sweden', contributed: 3.5, pledged: 0 },
+  { name: 'Denmark', contributed: 1.8, pledged: 0 },
+  { name: 'Netherlands', contributed: 1.8, pledged: 0 },
+  { name: 'Funds by UN Agencies', contributed: 1.5, pledged: 0 },
+  { name: 'Finland', contributed: 1.2, pledged: 0 },
+  { name: 'Switzerland', contributed: 1.2, pledged: 0 },
+  { name: 'Norway', contributed: 1, pledged: 0 },
+  { name: 'Estonia', contributed: 0.5, pledged: 0 },
+  { name: 'Belgium', contributed: 0.5, pledged: 0 },
+  { name: 'Private Donations', contributed: 0.3, pledged: 0 },
+  { name: 'Czech Republic', contributed: 0.2, pledged: 0 },
+  { name: 'Italy', contributed: 0.1, pledged: 0 },
+  { name: 'Austria', contributed: 0.1, pledged: 0 },
+];
 const metrics = [
   { v: '$3.80', l: 'Avg CPL', icon: <CircleDollarSign className="w-5 h-5" style={{ color: A }} /> },
   { v: '8.4×',  l: 'ROAS',     icon: <TrendingUp className="w-5 h-5" style={{ color: A }} /> },
@@ -873,7 +792,7 @@ function About() {
   }
 
   return (
-    <section id="about" ref={sectionRef} className="py-32 relative overflow-hidden"
+    <section id="about" ref={sectionRef} className="py-10 md:py-12 relative overflow-hidden"
       style={{ background: 'linear-gradient(135deg, #FAFAF8 0%, #F5F0EB 100%)' }}>
 
       {/* Background decorative blobs */}
@@ -884,46 +803,38 @@ function About() {
 
       <div className="max-w-[1440px] mx-auto px-6">
 
-        {/* ── Eyebrow + headline ─────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-20 max-w-xl"
-        >
-          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-5" style={{ color: A }}>
-            <span className="inline-block w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: A }} />
-            About Growzzy
-          </span>
-          <h2 className="font-playfair text-5xl md:text-6xl font-bold text-stone-900 leading-[1.05] mb-5">
-            We Speak Both<br />
-            <span className="italic" style={{ color: A }}>Marketing &amp; Medicine</span>
-          </h2>
-          <p className="text-stone-500 text-lg leading-relaxed">
-            Founded on one belief: great clinics shouldn't lose patients to inferior ones just because of better marketing.
-          </p>
-        </motion.div>
-
         {/* ── Two-column body ──────────────────────────────────────────────── */}
-        <div className="grid md:grid-cols-2 gap-16 items-start">
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-10 items-start">
 
-          {/* LEFT — copy + checklist */}
+          {/* LEFT — heading + copy + checklist */}
           <div>
+            {/* Eyebrow + headline (now inside the left column) */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="mb-5"
+            >
+              <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: A }}>
+                <span className="inline-block w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: A }} />
+                About Growzzy
+              </span>
+              <h2 className="font-playfair text-3xl md:text-4xl font-bold text-stone-900 leading-[1.1] mb-2">
+                We Speak Both<br />
+                <span className="italic" style={{ color: A }}>Marketing &amp; Medicine</span>
+              </h2>
+              <p className="text-stone-500 text-sm md:text-base leading-relaxed">
+                Founded on one belief: great clinics shouldn't lose patients to inferior ones just because of better marketing.
+              </p>
+            </motion.div>
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.65, delay: 0.15, ease: 'easeOut' }}
-              className="text-stone-600 text-base leading-relaxed mb-5"
+              className="text-stone-600 text-sm md:text-base leading-relaxed mb-4"
             >
-              We bridge the gap — combining AI-driven ad technology with deep expertise in aesthetic and cosmetic surgery. Our team of media buyers, CRM specialists, content strategists, and growth analysts work exclusively in the beauty and wellness space.
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.65, delay: 0.25, ease: 'easeOut' }}
-              className="text-stone-600 text-base leading-relaxed mb-10"
-            >
-              We don't serve restaurants or e-commerce brands. <strong className="font-semibold text-stone-800">Clinics are all we do.</strong>
+              We combine AI-driven ad tech with deep expertise in cosmetic surgery. We don't serve restaurants or e-commerce brands—<strong className="font-semibold text-stone-800">clinics are all we do.</strong>
             </motion.p>
 
             {/* Animated checklist */}
@@ -931,23 +842,23 @@ function About() {
               variants={containerVariants}
               initial="hidden"
               animate={isInView ? 'visible' : 'hidden'}
-              className="space-y-3"
+              className="grid grid-cols-2 gap-x-4 gap-y-2.5"
             >
               {perks.map((item, i) => (
                 <motion.div
                   key={i}
                   variants={itemVariants}
-                  className="flex items-center gap-3 group"
+                  className="flex items-start gap-2 group"
                 >
                   <span
-                    className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
+                    className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mt-0.5"
                     style={{ background: `${A}18` }}
                   >
-                    <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 10 8" stroke="currentColor" strokeWidth="2.5" style={{ color: A }}>
+                    <svg className="w-2 h-2" fill="none" viewBox="0 0 10 8" stroke="currentColor" strokeWidth="2.5" style={{ color: A }}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M1 4l3 3 5-6" />
                     </svg>
                   </span>
-                  <span className="text-sm text-stone-700 font-medium">{item}</span>
+                  <span className="text-xs text-stone-700 font-medium leading-tight">{item}</span>
                 </motion.div>
               ))}
             </motion.div>
@@ -957,11 +868,13 @@ function About() {
               initial={{ opacity: 0, y: 16 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.7, ease: 'easeOut' }}
-              className="mt-10"
+              className="mt-6"
             >
               <a
-                href="#contact"
-                className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-full text-white transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_8px_28px_rgba(18,115,105,0.35)]"
+                href="https://calendly.com/growzzymedia"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-full text-white transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_8px_28px_rgba(196,30,58,0.35)]"
                 style={{ background: A }}
               >
                 Book a Free Growth Audit
@@ -981,53 +894,102 @@ function About() {
             style={{ perspective: '1000px' }}
           >
             {/* Main card */}
-            <div className="relative rounded-[28px] border border-stone-200/70 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.07)] overflow-hidden">
-
-              {/* Card top bar */}
-              <div className="flex items-center justify-between px-8 py-5 border-b border-stone-100">
-                <div>
-                  <p className="text-stone-800 text-xs font-bold uppercase tracking-widest">Live Performance Dashboard</p>
-                  <p className="text-stone-400 text-[10px] mt-0.5">Growzzy Client Network · Updated live</p>
+            <div className="relative rounded-[28px] border border-stone-200/70 bg-[#f8faf9] shadow-[0_24px_80px_rgba(0,0,0,0.07)] overflow-hidden">
+              <div className="p-6">
+              {/* Contributions Chart Banner & Legend */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                {/* Slanted Title Banner */}
+                <div 
+                  className="bg-[#C41E3A] text-white pl-5 pr-10 py-2.5 font-bold uppercase tracking-wider text-xs sm:text-sm"
+                  style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 100%)' }}
+                >
+                  CONTRIBUTIONS
                 </div>
-                {/* Live indicator */}
-                <div className="flex items-center gap-1.5">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#22c55e' }} />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ background: '#22c55e' }} />
-                  </span>
-                  <span className="text-[10px] text-stone-400 font-medium">LIVE</span>
+                {/* Legend */}
+                <div className="flex items-center gap-4 text-[10px] sm:text-xs font-bold text-[#C41E3A]/80 self-end sm:self-auto">
+                  <div className="flex items-center gap-1.5 font-semibold">
+                    <span className="w-3.5 h-3.5 bg-[#C41E3A] inline-block rounded-sm" />
+                    <span>CONTRIBUTED</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 font-semibold">
+                    <span className="w-3.5 h-3.5 bg-[#fca5a5] inline-block rounded-sm" />
+                    <span>PLEDGED</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="p-8">
-                {/* Animated bar chart */}
-                <div className="flex items-end gap-[5px] h-32 mb-3">
-                  {barHeights.map((h, i) => {
-                    const isHighlight = i >= 8
-                    return (
-                      <motion.div
-                        key={i}
-                        className="flex-1 rounded-t-[3px] origin-bottom"
-                        initial={{ scaleY: 0 }}
-                        animate={barsVisible ? { scaleY: 1 } : { scaleY: 0 }}
-                        transition={{ duration: 0.7, delay: i * 0.045, ease: [0.34, 1.56, 0.64, 1] }}
-                        style={{
-                          height: `${h}%`,
-                          background: isHighlight
-                            ? `linear-gradient(to top, ${A}, #c45e5e)`
-                            : '#e7e5e4',
-                        }}
-                        whileHover={{ scaleY: 1.06, transition: { duration: 0.2 } }}
-                      />
-                    )
-                  })}
+              {/* Chart Body */}
+              <div className="relative flex h-[240px] select-none pb-16">
+                {/* Y-Axis Labels */}
+                <div className="flex flex-col justify-between text-[10px] text-stone-400 font-semibold w-8 h-[140px] text-right pr-2">
+                  <span>30</span>
+                  <span>25</span>
+                  <span>20</span>
+                  <span>15</span>
+                  <span>10</span>
+                  <span>5</span>
+                  <span>0</span>
                 </div>
-                <div className="flex justify-between text-[10px] text-stone-300 mb-6 font-medium px-0.5">
-                  <span>Jan</span><span>Mar</span><span>Jun</span><span>Sep</span><span>Dec</span>
+
+                {/* Chart Area */}
+                <div className="relative flex-1 h-[140px] border-b border-stone-300">
+                  {/* Grid Lines */}
+                  <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                    {[...Array(6)].map((_, idx) => (
+                      <div key={idx} className="w-full border-t border-stone-200/60" />
+                    ))}
+                  </div>
+
+                  {/* Bars Container */}
+                  <div className="absolute inset-x-2 bottom-0 top-0 flex items-end justify-between">
+                    {chartData.map((item, idx) => {
+                      const total = item.contributed + item.pledged;
+                      const contributedPct = (item.contributed / 30) * 100;
+                      const pledgedPct = (item.pledged / 30) * 100;
+                      
+                      return (
+                        <div key={idx} className="flex flex-col items-center flex-1 group relative h-full justify-end px-[1px]">
+                          {/* Stacked Bar */}
+                          <div className="w-1.5 sm:w-2.5 flex flex-col justify-end h-full origin-bottom">
+                            {/* Pledged Part */}
+                            {item.pledged > 0 && (
+                              <motion.div
+                                initial={{ height: 0 }}
+                                animate={barsVisible ? { height: `${pledgedPct}%` } : {}}
+                                transition={{ duration: 0.6, delay: idx * 0.03 }}
+                                className="bg-[#fca5a5] rounded-t-[1px]"
+                                style={{ width: '100%' }}
+                              />
+                            )}
+                            {/* Contributed Part */}
+                            {item.contributed > 0 && (
+                              <motion.div
+                                initial={{ height: 0 }}
+                                animate={barsVisible ? { height: `${contributedPct}%` } : {}}
+                                transition={{ duration: 0.6, delay: idx * 0.03 }}
+                                className="bg-[#C41E3A] rounded-t-[1px]"
+                                style={{ width: '100%' }}
+                              />
+                            )}
+                          </div>
+
+                          {/* Label (Rotated) */}
+                          <div className="absolute top-[144px] origin-center -rotate-90 whitespace-nowrap text-[8px] font-semibold text-stone-500 tracking-tight translate-y-5">
+                            {item.name}
+                          </div>
+
+                          {/* Tooltip */}
+                          <div className="absolute bottom-full mb-1 bg-stone-800 text-white text-[9px] rounded px-1.5 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-30 shadow-md">
+                            <span className="font-bold">{item.name}</span><br />
+                            {item.contributed > 0 && `Contributed: $${item.contributed}M`}<br />
+                            {item.pledged > 0 && `Pledged: $${item.pledged}M`}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <p className="text-stone-400 text-[11px] text-center mb-8 tracking-wide">
-                  Consultations booked — last 12 months
-                </p>
+              </div>
 
                 {/* Metric chips */}
                 <div className="grid grid-cols-3 gap-3">
@@ -1037,7 +999,7 @@ function About() {
                       initial={{ opacity: 0, y: 20, scale: 0.88 }}
                       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
                       transition={{ duration: 0.55, delay: 0.7 + i * 0.12, ease: [0.34, 1.56, 0.64, 1] }}
-                      whileHover={{ y: -3, boxShadow: '0 10px 24px rgba(18,115,105,0.12)', transition: { duration: 0.25 } }}
+                      whileHover={{ y: -3, boxShadow: '0 10px 24px rgba(196,30,58,0.12)', transition: { duration: 0.25 } }}
                       className="text-center py-3 px-1 sm:py-5 sm:px-3 rounded-2xl border border-stone-100 bg-stone-50 cursor-default"
                     >
                       <div className="flex justify-center mb-1">{s.icon}</div>
@@ -1091,229 +1053,135 @@ function About() {
   )
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// CONTACT / CTA
-// ═══════════════════════════════════════════════════════════════════════════════
-function Contact() {
-  const [form, setForm] = useState({ name: '', clinic: '', city: '', phone: '', email: '', revenue: '' })
-  const [sent, setSent] = useState(false)
-  const sectionRef = useRef(null)
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 })
 
-  const handleSubmit = e => {
-    e.preventDefault()
-    setSent(true)
-    setTimeout(() => setSent(false), 5000)
-    setForm({ name: '', clinic: '', city: '', phone: '', email: '', revenue: '' })
-  }
-
-  const inputClass = "w-full border border-stone-700/50 rounded-xl px-4 py-3.5 text-sm text-stone-200 placeholder-stone-500 focus:outline-none focus:border-red-400/50 focus:bg-stone-800/80 transition-all duration-300 bg-stone-800/40 backdrop-blur-sm"
-  const labelClass = "block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1.5 ml-1"
-
-  return (
-    <section id="contact" ref={sectionRef} className="py-32 relative overflow-hidden bg-stone-950">
-      {/* Decorative background glows */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full blur-[120px] opacity-20" style={{ background: A }} />
-        <div className="absolute bottom-[10%] -left-[10%] w-[500px] h-[500px] rounded-full blur-[100px] opacity-10" style={{ background: '#3b82f6' }} />
-      </div>
-
-      <div className="max-w-[1440px] mx-auto px-6 grid lg:grid-cols-12 gap-16 items-center relative z-10">
-
-        {/* Left info */}
-        <div className="lg:col-span-5">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-6" style={{ color: '#ef4444' }}>
-              <span className="inline-block w-1.5 h-1.5 rounded-full animate-pulse bg-red-500" />
-              Limited Availability
-            </span>
-            <h2 className="font-playfair text-5xl md:text-6xl font-bold text-white leading-tight mb-6">
-              Claim Your Free<br />
-              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-600">Growth Audit</span>
-            </h2>
-            <p className="text-stone-400 text-lg leading-relaxed mb-12">
-              Tell us about your clinic. We'll audit your digital presence, analyse your local competition, and build a custom 90-day growth roadmap — completely free.
-            </p>
-          </motion.div>
-
-          <motion.div 
-            initial="hidden"
-            animate={isInView ? 'visible' : 'hidden'}
-            variants={{
-              hidden: {},
-              visible: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } }
-            }}
-            className="space-y-6"
-          >
-            {[
-              { icon: <Search className="w-5 h-5 text-blue-400" />, title: 'Digital Presence Audit', desc: 'Google, Instagram, Meta Ads, Reviews' },
-              { icon: <Target className="w-5 h-5 text-rose-400" />, title: 'Competitor Analysis',    desc: "Who's eating your market share and how" },
-              { icon: <TrendingUp className="w-5 h-5 text-emerald-400" />, title: '90-Day Growth Roadmap', desc: 'Exactly what we\'d do for your clinic'  },
-            ].map((item, i) => (
-              <motion.div 
-                key={i} 
-                variants={{
-                  hidden: { opacity: 0, x: -20 },
-                  visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: 'easeOut' } }
-                }}
-                className="flex items-start gap-5 group cursor-default"
-              >
-                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-stone-900 border border-stone-800 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:border-stone-700 shadow-lg">
-                  {item.icon}
-                </div>
-                <div className="pt-1">
-                  <p className="text-stone-200 font-semibold text-base mb-1 group-hover:text-white transition-colors">{item.title}</p>
-                  <p className="text-stone-500 text-sm">{item.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Form Box */}
-        <div className="lg:col-span-7">
-          <motion.div 
-            initial={{ opacity: 0, y: 40, scale: 0.95 }}
-            animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="bg-stone-900/60 backdrop-blur-xl rounded-[32px] p-8 sm:p-12 border border-stone-800 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)]"
-          >
-            {sent ? (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center h-[450px] text-center"
-              >
-                <div className="h-20 w-20 rounded-full flex items-center justify-center mb-6 bg-red-500/10 border border-red-500/20">
-                  <svg className="w-10 h-10 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="font-playfair text-3xl font-bold text-white mb-3">Audit Requested!</h3>
-                <p className="text-stone-400 text-base max-w-sm">We've received your details. One of our growth strategists will be in touch within 24 hours.</p>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="mb-8">
-                  <h3 className="text-white font-bold text-2xl mb-2">Request Your Audit</h3>
-                  <p className="text-stone-400 text-sm">Fill out the details below to get started.</p>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className={labelClass}>Your Name</label>
-                    <input type="text" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Dr. Priya Sharma" className={inputClass} />
-                  </div>
-                  <div>
-                    <label className={labelClass}>Clinic Name</label>
-                    <input type="text" required value={form.clinic} onChange={e => setForm(f => ({ ...f, clinic: e.target.value }))} placeholder="Your Clinic Name" className={inputClass} />
-                  </div>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className={labelClass}>City</label>
-                    <input type="text" value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="e.g. Mumbai" className={inputClass} />
-                  </div>
-                  <div>
-                    <label className={labelClass}>Phone / WhatsApp</label>
-                    <input type="tel" required value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+91 90000 00000" className={inputClass} />
-                  </div>
-                </div>
-
-                <div>
-                  <label className={labelClass}>Email Address</label>
-                  <input type="email" required value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="you@yourclinic.com" className={inputClass} />
-                </div>
-
-                <div>
-                  <label className={labelClass}>Monthly Revenue Range</label>
-                  <select value={form.revenue} onChange={e => setForm(f => ({ ...f, revenue: e.target.value }))} className={inputClass + ' cursor-pointer appearance-none'}>
-                    <option value="" disabled className="text-stone-500">Select your current range...</option>
-                    <option className="bg-stone-900">Below $10,000/month</option>
-                    <option className="bg-stone-900">$10,000–$30,000/month</option>
-                    <option className="bg-stone-900">$30,000–$100,000/month</option>
-                    <option className="bg-stone-900">$100,000+ /month</option>
-                  </select>
-                </div>
-
-                <div className="pt-4">
-                  <button
-                    type="submit"
-                    className="group relative w-full py-4 rounded-xl text-sm font-bold text-white transition-all duration-300 overflow-hidden"
-                    style={{ background: `linear-gradient(to right, ${AB}, ${A})` }}
-                  >
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                    <span className="relative flex items-center justify-center gap-2">
-                      Claim My Free Growth Audit
-                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </span>
-                  </button>
-                  <div className="mt-4 flex items-center justify-center gap-2 text-stone-500 text-xs font-medium">
-                    <svg className="w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                    No commitment. No credit card. 100% Secure.
-                  </div>
-                </div>
-              </form>
-            )}
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  )
-}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // FOOTER
 // ═══════════════════════════════════════════════════════════════════════════════
 function Footer() {
   return (
-    <footer className="bg-stone-900 text-stone-400 pt-16 pb-8">
-      <div className="max-w-[1440px] mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+    <footer id="contact" className="bg-[#071917] text-[#a5bdbc] pt-12 pb-8 border-t border-[#C41E3A]/25 relative overflow-hidden">
+      {/* Decorative gradient light glow */}
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#C41E3A]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#C41E3A]/3 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+
+      <div className="max-w-[1440px] mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-16">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="h-9 w-9 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: A }}>
-                Gz
+            {/* White-rendered logo branding */}
+            <a href="#home" className="flex items-center group mb-5" aria-label="Growzzy Media">
+              <div className="relative overflow-hidden flex items-center justify-start transition-transform duration-300 group-hover:scale-105" style={{ width: '180px', height: '36px' }}>
+                <img
+                  src="/12.png"
+                  alt="Growzzy Media"
+                  className="absolute max-w-none brightness-0 invert"
+                  style={{
+                    height: '150px',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                />
               </div>
-              <span className="text-white font-bold text-lg">Growzzy<span style={{ color: A }}>.</span></span>
-            </div>
-            <p className="text-stone-400 text-sm leading-relaxed max-w-xs mb-6">
-              Growth marketing built exclusively for medspas, cosmetic surgery clinics, and aesthetic practices across India.
+            </a>
+            <p className="text-[#a5bdbc]/90 text-sm leading-relaxed max-w-sm mb-6">
+              Premium growth marketing systems built exclusively for medspas, cosmetic surgery clinics, and aesthetic practices. Scaling bookings with ROI-first technology.
             </p>
+            {/* Themed Social Links */}
             <div className="flex gap-3">
-              {['In', 'Ig', 'Tw'].map(s => (
-                <a key={s} href="#" className="h-9 w-9 rounded-full border border-stone-700 flex items-center justify-center text-stone-400 hover:border-stone-500 hover:text-stone-200 text-xs font-bold transition-colors duration-200">{s}</a>
+              {[
+                {
+                  name: 'LinkedIn',
+                  href: '#',
+                  svg: (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                  ),
+                },
+                {
+                  name: 'Instagram',
+                  href: 'https://www.instagram.com/growzzy_media/',
+                  svg: (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                  ),
+                },
+                {
+                  name: 'WhatsApp',
+                  href: 'https://wa.me/919259737609',
+                  svg: (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.503-5.739-1.45L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.859.002-2.637-1.019-5.114-2.876-6.973-1.857-1.859-4.335-2.88-6.97-2.882-5.437 0-9.863 4.42-9.867 9.86-.001 1.774.475 3.503 1.378 5.027L1.93 21.025l5.228-1.378-.511-.493zm11.536-7.078c-.301-.15-1.78-.879-2.056-.979-.275-.1-.475-.15-.675.15-.2.3-.775.979-.95 1.179-.175.2-.35.225-.65.075-1.02-.515-1.74-.775-2.425-1.425-.567-.538-.857-1.127-1.057-1.427-.2-.3-.022-.462.128-.612.135-.135.301-.35.45-.525.15-.175.2-.3.3-.5.1-.2.05-.375-.025-.525-.075-.15-.675-1.625-.925-2.225-.244-.589-.491-.51-.675-.519-.174-.009-.374-.01-.574-.01-.2 0-.525.075-.8.375-.275.3-1.05 1.025-1.05 2.5s1.075 2.9 1.225 3.1c.15.2 2.11 3.22 5.11 4.52 1.42.615 2.235.69 3.035.57.8-.12 1.78-.727 2.03-1.43.25-.7.25-1.3.175-1.425-.075-.125-.275-.2-.575-.35z"/>
+                    </svg>
+                  ),
+                },
+                {
+                  name: 'Twitter',
+                  href: '#',
+                  svg: (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                    </svg>
+                  ),
+                },
+              ].map(s => (
+                <a
+                  key={s.name}
+                  href={s.href}
+                  aria-label={s.name}
+                  className="h-10 w-10 rounded-full border border-[#C41E3A]/30 flex items-center justify-center text-[#a5bdbc] hover:border-[#C41E3A] hover:bg-[#C41E3A]/10 hover:text-white transition-all duration-300"
+                >
+                  {s.svg}
+                </a>
               ))}
             </div>
           </div>
           <div>
-            <p className="text-white font-semibold text-sm mb-4">Services</p>
-            {['Meta & Google Ads', 'Consultation Funnels', 'Content & SEO', 'Reputation Management', 'Growth Analytics'].map(l => (
-              <a key={l} href="#services" className="block text-sm text-stone-400 hover:text-stone-200 mb-2.5 transition-colors">{l}</a>
+            <p className="text-white font-semibold text-sm tracking-wider uppercase mb-5">Quick Links</p>
+            {['Home', 'Services', 'About', 'Testimonials'].map(l => (
+              <a
+                key={l}
+                href={`#${l.toLowerCase()}`}
+                className="block text-sm text-[#a5bdbc] hover:text-white mb-3 transition-colors duration-200"
+              >
+                {l}
+              </a>
             ))}
           </div>
           <div>
-            <p className="text-white font-semibold text-sm mb-4">Contact</p>
-            <div className="space-y-3 text-sm text-stone-400">
-              <p>info@growzzymedia.com</p>
-              <p>+91 98765 43210</p>
-              <p>Delhi · Mumbai · Bangalore</p>
+            <p className="text-white font-semibold text-sm tracking-wider uppercase mb-5">Contact Us</p>
+            <div className="space-y-4 text-sm text-[#a5bdbc]">
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 text-[#C41E3A]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <a href="mailto:growzzymedia@gmail.com" className="hover:text-white transition-colors duration-200">growzzymedia@gmail.com</a>
+              </div>
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 text-[#C41E3A]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <a href="tel:+919259737609" className="hover:text-white transition-colors duration-200">+91-9259737609</a>
+              </div>
+              <div className="flex items-center gap-3">
+                <svg className="w-4 h-4 text-[#C41E3A]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Delhi · Mumbai · Bangalore</span>
+              </div>
             </div>
           </div>
         </div>
-        <div className="border-t border-stone-800 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-stone-600">
+        <div className="border-t border-[#C41E3A]/20 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[#a5bdbc]/60">
           <p>© 2026 Growzzy Media. All rights reserved.</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-stone-400 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-stone-400 transition-colors">Terms of Service</a>
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-white transition-colors duration-200">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors duration-200">Terms of Service</a>
           </div>
         </div>
       </div>
@@ -1438,38 +1306,7 @@ export default function App() {
         scrollTrigger: { trigger: '#testimonials .flex.justify-center', start: 'top 85%' }
       })
 
-    // ─── 7. Global / Map section — dramatic entrance ──────────────────────────
-    const globalTl = gsap.timeline({
-      scrollTrigger: { trigger: '#global', start: 'top 78%' }
-    })
-    globalTl
-      .fromTo('#global .text-center p:first-child',
-        { opacity: 0, y: -20, letterSpacing: '0.3em' },
-        { opacity: 1, y: 0, letterSpacing: '0.12em', duration: 0.7, ease: 'power2.out' })
-      .fromTo('#global h2',
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out' }, '-=0.4')
-      .fromTo('#global .text-center p.text-stone-500',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
 
-    // Stat cards pop in
-    gsap.fromTo('#global .grid > div',
-      { opacity: 0, y: 40, scale: 0.9 },
-      {
-        opacity: 1, y: 0, scale: 1,
-        duration: 0.6, stagger: 0.1, ease: 'back.out(1.6)',
-        scrollTrigger: { trigger: '#global .grid', start: 'top 85%' }
-      })
-
-    // Map section reveal with clip-path wipe
-    gsap.fromTo('#global .rounded-3xl',
-      { opacity: 0, clipPath: 'inset(0 100% 0 0)', y: 40 },
-      {
-        opacity: 1, clipPath: 'inset(0 0% 0 0)', y: 0,
-        duration: 1.2, ease: 'power3.inOut',
-        scrollTrigger: { trigger: '#global .rounded-3xl', start: 'top 85%' }
-      })
 
     // ─── 8. About — split layout entrance ────────────────────────────────────
     const aboutTl = gsap.timeline({
@@ -1515,23 +1352,7 @@ export default function App() {
         scrollTrigger: { trigger: '#about .grid.grid-cols-3', start: 'top 85%' }
       })
 
-    // ─── 9. Contact — form slides up, CTA fades in ────────────────────────────
-    const contactTl = gsap.timeline({
-      scrollTrigger: { trigger: '#contact', start: 'top 78%' }
-    })
-    contactTl
-      .fromTo('#contact h2',
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out' })
-      .fromTo('#contact p.text-stone-500',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
-      .fromTo('#contact form',
-        { opacity: 0, y: 50, scale: 0.97 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: 'power3.out' }, '-=0.4')
-      .fromTo('#contact form input, #contact form select, #contact form button',
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out' }, '-=0.4')
+
 
     // ─── 10. Horizontal scroll parallax on section dividers ──────────────────
     gsap.utils.toArray('[data-parallax]').forEach(el => {
@@ -1575,10 +1396,8 @@ export default function App() {
       <ICPSection />
       <Services />
       <Testimonials />
-      <GlobalReach />
-      <Feature108 />
+
       <About />
-      <Contact />
       <Footer />
     </div>
   )

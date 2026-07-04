@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { Layout, Pointer, Zap, ArrowRight, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { AnimatedLinkButton } from "@/components/ui/animated-link-button";
 
 const Feature108 = ({
   badge = "Performance",
@@ -17,7 +17,7 @@ const Feature108 = ({
         title: "Growth Analytics",
         subtitle: "Know your exact cost-per-patient, every day",
         description:
-          "A real-time performance dashboard that connects your ad spend directly to booked procedures. Track CPL, ROAS, consultation-to-patient conversion rate, and revenue \u2014 all in one place. No more guessing what is working.",
+          "A real-time dashboard connecting ad spend to booked procedures. Track CPL, ROAS, and revenue.",
         features: [
           "Real-time revenue attribution dashboard",
           "Procedure-level CPL & ROAS tracking",
@@ -28,7 +28,7 @@ const Feature108 = ({
         metricValue: "$3.80",
         metricLabel: "Avg. CPL",
         imageSrc:
-          "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+          "https://i.pinimg.com/1200x/75/1e/f4/751ef4fcb0604fb69214e69f30125e59.jpg",
         imageAlt: "Growth analytics dashboard",
       },
     },
@@ -41,7 +41,7 @@ const Feature108 = ({
         title: "Acquisition Funnels",
         subtitle: "Convert clicks into consultations automatically",
         description:
-          "Stop losing leads to clunky landing pages. Our custom-built acquisition funnels are designed specifically for aesthetic clinics to maximize booking rates and minimize drop-off.",
+          "Stop losing leads to clunky landing pages. Custom-built funnels designed to maximize booking rates.",
         features: [
           "High-converting landing page designs",
           "Automated lead nurturing sequences",
@@ -52,7 +52,7 @@ const Feature108 = ({
         metricValue: "42%",
         metricLabel: "Conversion Rate",
         imageSrc:
-          "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop",
+          "/image copy 2.png",
         imageAlt: "Patient acquisition funnels",
       },
     },
@@ -65,7 +65,7 @@ const Feature108 = ({
         title: "Brand Authority",
         subtitle: "Position your clinic as the premium choice",
         description:
-          "Build undeniable trust before the patient ever walks through your doors. We help you showcase your expertise, before-and-afters, and patient testimonials in a way that commands premium pricing.",
+          "Build undeniable trust before the patient arrives. Showcase your expertise to command premium pricing.",
         features: [
           "Premium content strategy & production",
           "Social proof amplification",
@@ -82,83 +82,112 @@ const Feature108 = ({
     },
   ],
 }) => {
+  const item1 = tabs[0]?.content;
+  const item2 = tabs[1]?.content;
+  const item3 = tabs[2]?.content;
+
+  const renderContent = (content) => (
+    <div className="flex flex-col gap-3 h-full">
+      <Badge variant="outline" className="w-fit bg-stone-50 text-[#127369] border-[#127369]/20 font-playfair text-base px-2.5 py-0.5">
+        {content.badge}
+      </Badge>
+      <div>
+        <h3 className="font-playfair text-xl md:text-2xl font-bold text-stone-900 mb-1">
+          {content.title}
+        </h3>
+        <p className="text-[#127369] font-medium text-xs mb-2">
+          {content.subtitle}
+        </p>
+        <p className="text-stone-500 text-xs leading-relaxed mb-3">
+          {content.description}
+        </p>
+        <ul className="space-y-1.5 mb-3">
+          {content.features.slice(0, 2).map((feature, idx) => (
+            <li key={idx} className="flex items-start gap-2 text-stone-600 text-[11px]">
+              <Check className="w-3 h-3 text-[#127369] shrink-0 mt-0.5" />
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-auto pt-3 border-t border-stone-100">
+        <div>
+          <p className="font-playfair text-xl font-bold text-[#127369]">{content.metricValue}</p>
+          <p className="text-[9px] text-stone-400 uppercase tracking-wider">{content.metricLabel}</p>
+        </div>
+        <AnimatedLinkButton>
+          {content.buttonText}
+        </AnimatedLinkButton>
+      </div>
+    </div>
+  );
+
   return (
-    <section className="py-24 bg-stone-50">
+    <section className="py-12 lg:py-16 bg-stone-50">
       <div className="max-w-[1440px] mx-auto px-6">
-        <div className="flex flex-col items-center gap-4 text-center mb-16">
+        <div className="flex flex-col items-center gap-2 text-center mb-8">
           <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#127369]">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#127369]" />
             {badge}
           </span>
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-stone-900 leading-tight">
+          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-stone-900 leading-tight">
             {heading}
           </h2>
-          <p className="text-stone-500 text-lg max-w-2xl">{description}</p>
+          <p className="text-stone-500 text-base max-w-2xl">{description}</p>
         </div>
-        <Tabs defaultValue={tabs[0].value} className="mt-8 w-full max-w-full">
-          <TabsList className="flex w-full overflow-x-auto no-scrollbar justify-start sm:justify-center gap-3 pb-2 sm:pb-0 snap-x snap-mandatory">
-            {tabs.map((tab) => (
-              <TabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className="whitespace-nowrap flex-shrink-0 snap-center flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-stone-500 data-[state=active]:bg-white data-[state=active]:text-[#127369] data-[state=active]:shadow-sm transition-all"
-              >
-                {tab.icon} {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <div className="mx-auto mt-12 rounded-3xl bg-white border border-stone-100 shadow-sm p-8 lg:p-16">
-            {tabs.map((tab) => (
-              <TabsContent
-                key={tab.value}
-                value={tab.value}
-                className="grid gap-16 lg:grid-cols-2 items-center outline-none focus-visible:ring-0"
-              >
-                <div className="flex flex-col gap-6">
-                  <Badge variant="outline" className="w-fit bg-stone-50 text-[#127369] border-[#127369]/20 font-playfair text-xl px-4 py-1">
-                    {tab.content.badge}
-                  </Badge>
-                  <div>
-                    <h3 className="font-playfair text-4xl font-bold text-stone-900 mb-2">
-                      {tab.content.title}
-                    </h3>
-                    <p className="text-[#127369] font-medium text-sm mb-6">
-                      {tab.content.subtitle}
-                    </p>
-                    <p className="text-stone-500 text-base leading-relaxed mb-8">
-                      {tab.content.description}
-                    </p>
-                    <ul className="space-y-3 mb-10">
-                      {tab.content.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-stone-600 text-sm">
-                          <Check className="w-4 h-4 text-[#127369] shrink-0 mt-0.5" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-4 mt-auto pt-6 border-t border-stone-100">
-                    <div>
-                      <p className="font-playfair text-3xl font-bold text-[#127369]">{tab.content.metricValue}</p>
-                      <p className="text-xs text-stone-400 uppercase tracking-wider mt-1">{tab.content.metricLabel}</p>
-                    </div>
-                    <Button className="w-full sm:w-auto rounded-full bg-[#127369] hover:bg-[#0d554e] text-white px-6 py-5 flex items-center justify-center gap-2">
-                      {tab.content.buttonText} <ArrowRight className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] w-full rounded-2xl overflow-hidden shadow-xl border border-stone-100/50">
-                  <img
-                    src={tab.content.imageSrc}
-                    alt={tab.content.imageAlt}
-                    className="absolute inset-0 w-full h-full object-cover object-left"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent pointer-events-none" />
-                </div>
-              </TabsContent>
-            ))}
-          </div>
-        </Tabs>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+          {/* Top Featured Item - Full Width */}
+          {item1 && (
+            <div className="lg:col-span-2 rounded-2xl bg-white border border-stone-100 shadow-sm p-5 md:p-6 flex flex-col lg:flex-row gap-6 items-stretch">
+              <div className="flex-1">
+                {renderContent(item1)}
+              </div>
+              <div className="flex-1 w-full relative min-h-[160px] lg:min-h-[220px] rounded-xl overflow-hidden shadow-sm border border-stone-100/50">
+                <img
+                  src={item1.imageSrc}
+                  alt={item1.imageAlt}
+                  className="absolute inset-0 w-full h-full object-cover object-left"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent pointer-events-none" />
+              </div>
+            </div>
+          )}
+
+          {/* Bottom Left Item */}
+          {item2 && (
+            <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 md:p-6 flex flex-col xl:flex-row gap-5 items-stretch">
+              <div className="flex-1">
+                {renderContent(item2)}
+              </div>
+              <div className="xl:w-2/5 relative aspect-video xl:aspect-auto w-full rounded-xl overflow-hidden shadow-sm border border-stone-100/50">
+                <img
+                  src={item2.imageSrc}
+                  alt={item2.imageAlt}
+                  className="absolute inset-0 w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t xl:bg-gradient-to-l from-black/5 to-transparent pointer-events-none" />
+              </div>
+            </div>
+          )}
+
+          {/* Bottom Right Item */}
+          {item3 && (
+            <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 md:p-6 flex flex-col xl:flex-row gap-5 items-stretch">
+              <div className="flex-1">
+                {renderContent(item3)}
+              </div>
+              <div className="xl:w-2/5 relative aspect-video xl:aspect-auto w-full rounded-xl overflow-hidden shadow-sm border border-stone-100/50">
+                <img
+                  src={item3.imageSrc}
+                  alt={item3.imageAlt}
+                  className="absolute inset-0 w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t xl:bg-gradient-to-l from-black/5 to-transparent pointer-events-none" />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

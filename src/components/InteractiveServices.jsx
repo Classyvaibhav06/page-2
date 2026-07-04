@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { ArrowRight, Link, Zap, Target, Shield, TrendingUp, Users, Star, BarChart2 } from 'lucide-react'
+import { AnimatedButton } from '@/components/ui/animated-button'
 
-const A = '#127369'
-const AB = '#0d554e'
+const A = '#C41E3A'
+const AB = '#a01530'
 
 const servicesData = [
   {
@@ -174,7 +175,7 @@ export function OrbitalServices() {
   const expandedItem = servicesData.find(s => s.id === expandedId)
 
   return (
-    <section id="services" className="w-full relative overflow-hidden bg-[#FAF9F6]" style={{ minHeight: '100vh' }}>
+    <section id="services" className="w-full py-4 md:py-6 relative overflow-hidden bg-[#FAF9F6]">
       {/* Background ambient glows */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.06]"
@@ -186,7 +187,7 @@ export function OrbitalServices() {
       </div>
 
       {/* Section header */}
-      <div className="relative z-10 pt-20 pb-4 text-center">
+      <div className="relative z-10 pt-4 pb-0 text-center">
         <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest mb-4"
           style={{ color: A }}>
           <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ backgroundColor: A }} />
@@ -202,8 +203,7 @@ export function OrbitalServices() {
       {/* Orbital canvas */}
       <div
         ref={containerRef}
-        className="w-full flex items-center justify-center cursor-default"
-        style={{ height: '72vh' }}
+        className="w-full flex items-center justify-center cursor-default py-0"
         onClick={handleBgClick}
       >
         <div
@@ -384,11 +384,10 @@ export function OrbitalServices() {
       </div>
 
       {/* Bottom CTA */}
-      <div className="relative z-10 pb-16 text-center">
-        <a href="#contact" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-semibold text-sm text-white transition-all duration-200 hover:scale-105"
-          style={{ background: A, boxShadow: `0 8px 30px ${A}35` }}>
-          Get a Free Growth Audit <ArrowRight size={16} />
-        </a>
+      <div className="relative z-10 pb-2 flex justify-center text-center">
+        <AnimatedButton href="https://calendly.com/growzzymedia" target="_blank" rel="noopener noreferrer" className="shadow-[0_8px_30px_#C41E3A35]">
+          Get a Free Growth Audit
+        </AnimatedButton>
       </div>
     </section>
   )

@@ -50,7 +50,7 @@ export function GlobalReach() {
   return (
     <section
       id="global"
-      className="py-28 relative overflow-hidden"
+      className="py-10 md:py-12 relative overflow-hidden"
       style={{ background: '#FAF9F6' }}
     >
       {/* Subtle background blobs */}
@@ -71,11 +71,11 @@ export function GlobalReach() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-16"
+          className="text-center mb-6"
         >
           {/* Eyebrow */}
           <p
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-5"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest mb-2"
             style={{ color: A }}
           >
             <span
@@ -86,8 +86,8 @@ export function GlobalReach() {
           </p>
 
           <h2
-            className="font-playfair font-bold text-stone-900 leading-tight mb-5"
-            style={{ fontSize: 'clamp(2rem, 4vw + 0.5rem, 3.5rem)' }}
+            className="font-playfair font-bold text-stone-900 leading-tight mb-3"
+            style={{ fontSize: 'clamp(1.6rem, 3vw + 0.5rem, 2.8rem)' }}
           >
             Aesthetic Growth,{' '}
             <span className="italic" style={{ color: A }}>
@@ -95,9 +95,9 @@ export function GlobalReach() {
             </span>
           </h2>
 
-          <p className="text-stone-500 text-lg leading-relaxed max-w-2xl mx-auto">
+          <p className="text-stone-500 text-sm leading-relaxed max-w-xl mx-auto">
             From boutique medspas in Mumbai to luxury clinics in Dubai, London, New York, and Singapore —
-            Growzzy's patient acquisition systems are live across <strong className="text-stone-700 font-semibold">India, UAE, UK, USA &amp; Singapore</strong>.
+            live across <strong className="text-stone-700 font-semibold">India, UAE, UK, USA &amp; Singapore</strong>.
           </p>
         </motion.div>
 
@@ -107,7 +107,7 @@ export function GlobalReach() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14"
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"
         >
           {stats.map((s, i) => (
             <motion.div
@@ -116,15 +116,15 @@ export function GlobalReach() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
-              className="text-center py-8 rounded-2xl border border-stone-200/70 bg-white shadow-[0_4px_24px_rgb(0,0,0,0.04)]"
+              className="text-center py-4 rounded-2xl border border-stone-200/70 bg-white shadow-[0_4px_24px_rgb(0,0,0,0.04)]"
             >
               <div
-                className="font-playfair font-bold text-3xl md:text-4xl mb-1"
+                className="font-playfair font-bold text-2xl md:text-3xl mb-0.5"
                 style={{ color: A }}
               >
                 {s.value}
               </div>
-              <div className="text-stone-500 text-sm font-medium">{s.label}</div>
+              <div className="text-stone-500 text-xs font-medium">{s.label}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -135,7 +135,7 @@ export function GlobalReach() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-          className="rounded-3xl overflow-hidden border border-stone-200/60 shadow-[0_20px_80px_rgb(0,0,0,0.06)]"
+          className="rounded-3xl overflow-hidden border border-stone-200/60 shadow-[0_20px_80px_rgb(0,0,0,0.06)] max-w-[960px] mx-auto max-h-[380px]"
           style={{ background: '#FAF9F6' }}
         >
           <WorldMap
@@ -153,7 +153,7 @@ export function GlobalReach() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-center text-stone-400 text-sm mt-6 tracking-wide"
+          className="text-center text-stone-400 text-xs mt-3 tracking-wide"
         >
           Active clinics across India · UAE · UK · USA · Singapore
         </motion.p>

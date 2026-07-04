@@ -9,6 +9,8 @@ export default {
       colors: {
         rose:  '#e8536a',
         gold:  '#f5c842',
+        primary: '#C41E3A',
+        'primary-light': '#e8536a',
       },
       fontFamily: {
         inter:    ['Inter', 'system-ui', 'sans-serif'],

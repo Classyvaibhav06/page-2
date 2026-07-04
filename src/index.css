@@ -53,7 +53,7 @@
   left: 0;
   width: 0;
   height: 1.5px;
-  background: #8B3A3A;
+  background: #127369;
   transition: width 0.3s ease;
 }
 .nav-link:hover::after { width: 100%; }
@@ -64,8 +64,8 @@
 }
 .card-hover:hover {
   transform: translateY(-5px);
-  box-shadow: 0 16px 48px rgba(139, 58, 58, 0.10);
-  border-color: rgba(139, 58, 58, 0.30);
+  box-shadow: 0 16px 48px rgba(18, 115, 105, 0.12);
+  border-color: rgba(18, 115, 105, 0.30);
 }
 
 /* ── Stat chip shimmer ────────────────────────────── */
@@ -75,9 +75,9 @@
 }
 .stat-chip {
   background: linear-gradient(90deg,
-    rgba(139,58,58,0.06) 25%,
-    rgba(139,58,58,0.12) 50%,
-    rgba(139,58,58,0.06) 75%
+    rgba(18,115,105,0.06) 25%,
+    rgba(18,115,105,0.12) 50%,
+    rgba(18,115,105,0.06) 75%
   );
   background-size: 200% auto;
   animation: shimmer 3.5s linear infinite;
@@ -92,5 +92,10 @@
 
 /* ── Process connector ────────────────────────────── */
 .process-line {
-  background: linear-gradient(to right, transparent, rgba(139,58,58,0.35), transparent);
+  background: linear-gradient(to right, transparent, rgba(18,115,105,0.35), transparent);
 }
+
+.dark {
+  --muted-foreground: var(--light-100);
+}
+

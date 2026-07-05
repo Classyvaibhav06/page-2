@@ -300,7 +300,7 @@ function Hero() {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-gray-500 text-lg leading-[1.6] max-w-[480px] mt-5 mb-8">
+          <p className="text-stone-800 font-medium text-lg leading-[1.6] max-w-[480px] mt-5 mb-8" style={{ textShadow: '0 1px 6px rgba(255,255,255,0.7)' }}>
             AI-powered ads, content, and conversion systems that fill medspa and cosmetic clinic calendars with ready-to-book patients.
           </p>
 
